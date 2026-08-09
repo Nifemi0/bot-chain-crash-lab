@@ -4,6 +4,9 @@ import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import type { CanonicalRun, Simulation, SimulationEvent } from "@/lib/types";
 
+const IMPACT_RIG_URL =
+  "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/9ac13d4b-6e2d-43db-ae5d-808eff331873/external-assets/becd4769-0a15-42a8-a8ed-7b71d5f57774-hero-protocol-impact-rig.png";
+
 type Props = {
   network: {
     name: string;
@@ -31,15 +34,38 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
   const [events, setEvents] = useState<SimulationEvent[]>([]);
   const [state, setState] = useState<"idle" | "creating" | "streaming" | "complete" | "error">("idle");
   const [message, setMessage] = useState("Canonical demo contract loaded. Ready to replay.");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const streamRef = useRef<EventSource | null>(null);
 
-  useEffect(() => () => streamRef.current?.close(), []);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 36);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      streamRef.current?.close();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   const currentStage = (() => {
     if (events.some((event) => event.type === "replay.completed")) return "replay";
     if (events.some((event) => event.type === "invariant.failed")) return "impact";
     return "attack";
   })();
+
+  const runStatus =
+    currentStage === "replay"
+      ? "Replay verified"
+      : currentStage === "impact"
+        ? "Protocol compromised"
+        : "Canonical specimen ready";
 
   async function startSimulation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -84,174 +110,267 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
     }
   }
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <main>
-      <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Crash Lab home">Crash Lab</a>
-        <nav aria-label="Primary navigation">
-          <a href="#workflow">Workflow</a>
-          <a href="#evidence">Evidence</a>
-          <a href="#passport">Passport</a>
+    <div className="app-shell">
+      <div className="paper-texture" aria-hidden="true" />
+
+      <header className={`site-nav${scrolled ? " is-scrolled" : ""}`}>
+        <div className="nav-inner section-shell">
+          <a className="nav-brand" href="#top" aria-label="BOT Crash Lab home" onClick={closeMenu}>
+            <span className="nav-mark" aria-hidden="true" />
+            <span className="nav-wordmark">BOT / CRASH LAB</span>
+          </a>
+
+          <nav className="desktop-nav" aria-label="Primary navigation">
+            <a href="#how-it-works">How it works</a>
+            <a href="#simulator">Simulator</a>
+            <a href="#passport">Passport</a>
+          </nav>
+
+          <div className="nav-actions">
+            <button
+              className="mobile-nav-toggle"
+              type="button"
+              aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+              aria-controls="mobile-nav-panel"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((current) => !current)}
+            >
+              <span /><span />
+            </button>
+            <a className="button button--primary nav-cta" href="#start-simulation" onClick={closeMenu}>
+              Start a simulation
+            </a>
+          </div>
+        </div>
+
+        <nav id="mobile-nav-panel" className={`mobile-nav${menuOpen ? " is-open" : ""}`} aria-label="Mobile navigation">
+          <a href="#how-it-works" onClick={closeMenu}>How it works</a>
+          <a href="#simulator" onClick={closeMenu}>Simulator</a>
+          <a href="#passport" onClick={closeMenu}>Passport</a>
+          <a className="mobile-nav__cta" href="#start-simulation" onClick={closeMenu}>Start a simulation</a>
         </nav>
-        <a className="button button--small" href="#run">Run demo</a>
       </header>
 
-      <section id="top" className="hero section-shell">
-        <div className="hero__copy">
-          <p className="eyebrow"><span className="pulse-dot" /> Live on BOT Chain testnet</p>
-          <h1>Break the accounting.<br /><em>Prove the repair.</em></h1>
-          <p className="hero__lede">
-            Crash Lab turns one ERC-4626 failure into a reproducible security dossier: deployed
-            bytecode, adversarial transaction evidence, exact patch replay, and an on-chain report hash.
-          </p>
-          <div className="hero__actions">
-            <a className="button button--primary" href="#run">Start canonical replay</a>
-            <a className="button button--ghost" href={network.explorerUrl} target="_blank" rel="noreferrer">Open BOTScan ↗</a>
-          </div>
-          <p className="safety-note">Controlled testnet demonstration. Never attacks an unrelated live contract.</p>
-        </div>
-        <div className="hero__visual" aria-label="Protocol impact rig visualization">
-          <Image
-            src="/images/protocol-impact-rig.svg"
-            alt="Mechanical protocol impact rig aimed at a smart-contract vault specimen"
-            fill
-            priority
-            sizes="(max-width: 900px) 100vw, 52vw"
-          />
-          <div className="hero__readout">
-            <span>Specimen / ERC-4626</span>
-            <strong>{canonicalRunReady ? "Evidence anchored" : "Preparing canonical run"}</strong>
-          </div>
-        </div>
-      </section>
+      <main>
+        <section id="top" className="hero">
+          <div className="hero__inner section-shell">
+            <div className="hero__copy">
+              <p className="hero__meta">
+                <span>BOT CHAIN · CHAIN {network.chainId}</span>
+                <span><i /> LIVE TESTNET EVIDENCE</span>
+              </p>
+              <h1>
+                <span>Break your</span>
+                <span>Protocol before</span>
+                <span>Mainnet does.</span>
+              </h1>
+              <p className="hero__lede">
+                Deploy to a controlled adversarial sandbox. Autonomous agent-wallets stress protocol
+                accounting until the invariant fractures. Same-attack replay verifies the repair.
+              </p>
+              <div className="hero__actions">
+                <a className="button button--primary" href="#start-simulation">Spawn simulation</a>
+                <a className="button button--dark" href="#simulator">Watch a protocol break</a>
+              </div>
+              <p className="safety-note">Controlled testnet demonstration · never attacks an unrelated live contract</p>
+            </div>
 
-      <section className="signal-strip" aria-label="Deployment status">
-        <div><span>Network</span><strong>{network.name}</strong></div>
-        <div><span>Chain ID</span><strong>{network.chainId}</strong></div>
-        <div><span>Contracts live</span><strong>3 verified bytecodes</strong></div>
-        <div><span>Passport</span><strong>{canonicalRunReady ? "On-chain" : "Contract live"}</strong></div>
-      </section>
-
-      <section id="workflow" className="workflow section-shell">
-        <div className="section-heading">
-          <p className="eyebrow">The controlled workflow</p>
-          <h2>One exploit. One repair. The exact same replay.</h2>
-        </div>
-        <div className="workflow-grid">
-          <article><span>01</span><h3>Verify</h3><p>Resolve the address against chain 968 and hash its deployed runtime bytecode.</p></article>
-          <article><span>02</span><h3>Fracture</h3><p>Replay the first-depositor donation attack and capture the zero-share victim deposit.</p></article>
-          <article><span>03</span><h3>Repair</h3><p>Introduce virtual liquidity and reject zero-share deposits without changing the scenario.</p></article>
-          <article><span>04</span><h3>Anchor</h3><p>Publish compact source and report hashes to the Simulation Passport contract.</p></article>
-        </div>
-      </section>
-
-      <section id="evidence" className="ledger-section">
-        <div className="section-shell ledger-layout">
-          <div className="section-heading section-heading--light">
-            <p className="eyebrow">Failure ledger / canonical run</p>
-            <h2>Evidence, not a safety badge.</h2>
-            <p>The Passport proves a specific report existed. It does not claim that every behavior of a protocol is safe.</p>
+            <div className="hero__art" aria-label="Physical protocol impact rig striking a smart-contract vault specimen">
+              <Image
+                src={IMPACT_RIG_URL}
+                alt="Physical protocol impact rig striking a smart-contract vault specimen"
+                fill
+                priority
+                sizes="(max-width: 1023px) 100vw, 66vw"
+              />
+              <div className="specimen-readout">
+                <strong>Specimen: V-968</strong>
+                <span>Vault: {shorten(contracts.vulnerableVault, 8)}</span>
+              </div>
+              <div className="calibration-tape" aria-hidden="true">
+                <div>
+                  <span>AGENT DISPATCHED</span>
+                  <span>TRANSACTION EXECUTING</span>
+                  <span>INVARIANT MONITORING</span>
+                  <span>SAME-ATTACK REPLAY</span>
+                  <span>AGENT DISPATCHED</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="ledger" data-stage={currentStage}>
-            <div className="ledger__rail"><i /></div>
-            <article className={currentStage === "attack" ? "active" : ""}>
-              <span>Attack</span><h3>Share price manipulated</h3><p>A one-unit share holder donates directly into the vault.</p>
-            </article>
-            <article className={currentStage === "impact" ? "active" : ""}>
-              <span>Impact</span><h3>Victim receives zero shares</h3><p>The vulnerable deposit succeeds while transferring all victim assets.</p>
-            </article>
-            <article className={currentStage === "replay" ? "active" : ""}>
-              <span>Replay</span><h3>Invariant restored</h3><p>Virtual assets and shares preserve non-zero ownership in the patched vault.</p>
-            </article>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="run" className="runner section-shell">
-        <div className="section-heading">
-          <p className="eyebrow">Interactive evidence console</p>
-          <h2>Replay the deployed specimen.</h2>
-          <p>Use the canonical vault for the complete finding. Other BOT Chain addresses are bytecode-verified but never attacked by this MVP.</p>
-        </div>
-        <form className="runner__form" onSubmit={startSimulation}>
-          <label htmlFor="contract-address">BOT Chain testnet contract</label>
-          <div className="runner__controls">
-            <input
-              id="contract-address"
-              data-testid="contract-address"
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-              placeholder="0x…"
-              spellCheck={false}
-              autoComplete="off"
-              aria-describedby="simulation-status"
-            />
-            <button className="button button--primary" data-testid="start-simulation" disabled={state === "creating" || state === "streaming"}>
-              {state === "creating" ? "Verifying…" : state === "streaming" ? "Replaying…" : "Begin replay"}
-            </button>
+        <section id="how-it-works" className="capability-rail" aria-label="Crash Lab capabilities">
+          <div className="section-shell">
+            {["Real transactions", "Autonomous agents", "Invariant monitoring", "Same-attack replay"].map((item) => (
+              <div key={item}><i />{item}</div>
+            ))}
           </div>
-          <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>Use deployed demo vault</button>
-          <p id="simulation-status" className={`runner__status runner__status--${state}`} role="status" aria-live="polite">{message}</p>
-        </form>
+        </section>
 
-        {(events.length > 0 || simulation) && (
-          <div className="console" data-testid="simulation-console">
-            <div className="console__header"><span>Crash Lab / event stream</span><span>{simulation ? shorten(simulation.simulationId, 8) : "connecting"}</span></div>
-            <div className="console__events" aria-live="polite">
-              {events.map((item) => (
-                <p key={`${item.sequence}-${item.type}`} data-event-type={item.type}>
-                  <span>{String(item.sequence).padStart(2, "0")}</span>
-                  <strong>{item.type}</strong>
-                  <em>{item.message}</em>
+        <section id="simulator" className="failure-ledger">
+          <div className="section-shell">
+            <div className="failure-ledger__heading">
+              <h2>Inside the test:<span>Canonical run</span></h2>
+              <strong className={`run-badge run-badge--${currentStage}`}>{runStatus}</strong>
+            </div>
+
+            <div className="ledger-rows" data-stage={currentStage}>
+              <article className={currentStage === "attack" ? "is-active" : ""}>
+                <div className="ledger-row__phase">01 / Attack</div>
+                <div>
+                  <h3>Signal-yellow ingress</h3>
+                  <p>A one-share holder donates directly into the vulnerable ERC-4626 vault to distort ownership accounting.</p>
+                </div>
+                <div className="ledger-row__value ledger-row__value--yellow">
+                  TX {shorten(canonicalRun.attack.transactionHashes.at(-1) ?? null, 8)} · attacker recovered {canonicalRun.attack.attackerRecoveredAssets} BOT
+                </div>
+                <i className="ledger-row__light" />
+              </article>
+
+              <article className={currentStage === "impact" ? "is-active" : ""}>
+                <div className="ledger-row__phase">02 / Impact</div>
+                <div>
+                  <h3>Invariant fracture</h3>
+                  <p>The victim deposit transfers assets but mints no ownership after donation-driven share inflation.</p>
+                </div>
+                <div className="ledger-row__value ledger-row__value--red">
+                  INV-01 FAIL · VICTIM SHARES = {canonicalRun.attack.victimShares}
+                </div>
+                <i className="ledger-row__light" />
+              </article>
+
+              <article className={currentStage === "replay" ? "is-active" : ""}>
+                <div className="ledger-row__phase">03 / Replay</div>
+                <div>
+                  <h3>Verification loop</h3>
+                  <p>Virtual liquidity is deployed, then the exact sequence is replayed against the patched universe.</p>
+                </div>
+                <div className="ledger-row__value ledger-row__value--green">
+                  REPLAY SUCCESS · {canonicalRun.replay.victimShares} VICTIM SHARES
+                </div>
+                <i className="ledger-row__light" />
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="start-simulation" className="simulation-section">
+          <div className="simulation-stack">
+            <div className="simulation-dossier">
+              <span className="calibration-tab">{canonicalRunReady ? "Calibration OK" : "Passport pending"}</span>
+              <div className="simulation-dossier__intro">
+                <p className="eyebrow">Interactive evidence console</p>
+                <h2>Ready for the impact?</h2>
+                <p>
+                  Submit a BOT Chain contract address. The canonical vault receives the complete controlled
+                  replay; other addresses are bytecode-verified and are never attacked.
                 </p>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
 
-        {simulation && state === "complete" && (
-          <article className="finding" data-testid="finding-report">
-            <div className="finding__topline">
-              <span>{simulation.finding.id}</span>
-              <strong className={`badge badge--${simulation.finding.status}`}>{simulation.finding.status}</strong>
+              <form className="runner__form" onSubmit={startSimulation}>
+                <label htmlFor="contract-address">Contract address</label>
+                <div className="runner__controls">
+                  <input
+                    id="contract-address"
+                    data-testid="contract-address"
+                    value={address}
+                    onChange={(event) => setAddress(event.target.value)}
+                    placeholder="ENTER BOT CHAIN ADDRESS (0x...)"
+                    spellCheck={false}
+                    autoComplete="off"
+                    aria-describedby="simulation-status"
+                  />
+                  <button className="button button--primary" data-testid="start-simulation" disabled={state === "creating" || state === "streaming"}>
+                    {state === "creating" ? "Verifying…" : state === "streaming" ? "Replaying…" : "Begin simulation"}
+                  </button>
+                </div>
+                <div className="runner__footer">
+                  <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>
+                    Use deployed demo vault
+                  </button>
+                  <p id="simulation-status" className={`runner__status runner__status--${state}`} role="status" aria-live="polite">{message}</p>
+                </div>
+              </form>
             </div>
-            <h3>{simulation.finding.title}</h3>
-            <p>{simulation.finding.summary}</p>
-            <dl>
-              <div><dt>Invariant</dt><dd>{simulation.finding.invariant}</dd></div>
-              <div><dt>Before patch</dt><dd>{simulation.finding.beforeVictimShares} victim shares</dd></div>
-              <div><dt>After replay</dt><dd>{simulation.finding.afterVictimShares} victim shares</dd></div>
-              <div><dt>Runtime code hash</dt><dd>{shorten(simulation.codeHash, 12)}</dd></div>
-            </dl>
-          </article>
-        )}
-      </section>
 
-      <section id="passport" className="passport-section">
-        <div className="section-shell passport-grid">
-          <div className="section-heading">
-            <p className="eyebrow">BOT Chain Simulation Passport</p>
-            <h2>A compact proof lives on-chain.</h2>
-            <p>Detailed exploit traces stay off-chain. The Passport stores the target, source hash, report hash, status, timestamp, tool version, and publisher.</p>
+            {(events.length > 0 || simulation) && (
+              <div className="console" data-testid="simulation-console">
+                <div className="console__header">
+                  <span>Crash Lab / live event stream</span>
+                  <span>{simulation ? shorten(simulation.simulationId, 8) : "connecting"}</span>
+                </div>
+                <div className="console__events" aria-live="polite">
+                  {events.map((item) => (
+                    <p key={`${item.sequence}-${item.type}`} data-event-type={item.type}>
+                      <span>{String(item.sequence).padStart(2, "0")}</span>
+                      <strong>{item.type}</strong>
+                      <em>{item.message}</em>
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {simulation && state === "complete" && (
+              <article className="finding" data-testid="finding-report">
+                <div className="finding__topline">
+                  <span>{simulation.finding.id}</span>
+                  <strong className={`badge badge--${simulation.finding.status}`}>{simulation.finding.status}</strong>
+                </div>
+                <h3>{simulation.finding.title}</h3>
+                <p>{simulation.finding.summary}</p>
+                <dl>
+                  <div><dt>Invariant</dt><dd>{simulation.finding.invariant}</dd></div>
+                  <div><dt>Before patch</dt><dd>{simulation.finding.beforeVictimShares} victim shares</dd></div>
+                  <div><dt>After replay</dt><dd>{simulation.finding.afterVictimShares} victim shares</dd></div>
+                  <div><dt>Runtime code hash</dt><dd>{shorten(simulation.codeHash, 12)}</dd></div>
+                </dl>
+              </article>
+            )}
+
+            <article id="passport" className="passport-proof">
+              <div className="passport-proof__intro">
+                <p className="eyebrow">BOT Chain Simulation Passport</p>
+                <h2>Compact proof. On-chain.</h2>
+                <p>The Passport anchors this exact source and report; it is evidence of the run, not a blanket safety badge.</p>
+              </div>
+              <dl>
+                <div><dt>Status</dt><dd><i className={canonicalRunReady ? "proof-light proof-light--ok" : "proof-light"} />{canonicalRunReady ? "Anchored" : "Contract live"}</dd></div>
+                <div><dt>Passport</dt><dd>{shorten(contracts.passport, 10)}</dd></div>
+                <div><dt>Simulation ID</dt><dd>{shorten(canonicalRun.passport.simulationId, 10)}</dd></div>
+                <div><dt>Report hash</dt><dd>{shorten(canonicalRun.passport.reportHash, 10)}</dd></div>
+                <div><dt>Publisher</dt><dd>{shorten(canonicalRun.passport.publisher, 10)}</dd></div>
+              </dl>
+              <a className="button button--dark" href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">
+                Inspect Passport ↗
+              </a>
+            </article>
           </div>
-          <article className="passport-card">
-            <div className="passport-card__status"><span className={canonicalRunReady ? "status-light status-light--ok" : "status-light"} />{canonicalRunReady ? "Anchored" : "Contract deployed"}</div>
-            <dl>
-              <div><dt>Passport contract</dt><dd>{shorten(contracts.passport, 10)}</dd></div>
-              <div><dt>Simulation ID</dt><dd>{shorten(canonicalRun.passport.simulationId, 10)}</dd></div>
-              <div><dt>Report hash</dt><dd>{shorten(canonicalRun.passport.reportHash, 10)}</dd></div>
-              <div><dt>Publisher</dt><dd>{shorten(canonicalRun.passport.publisher, 10)}</dd></div>
-            </dl>
-            <a className="button button--dark" href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Inspect contract ↗</a>
-          </article>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <div className="section-shell site-footer__grid">
+          <div className="footer-brand">
+            <strong>BOT / CRASH LAB</strong>
+            <span>Experimental protocol hardening</span>
+            <p>A disciplined environment for adversarial smart-contract stress testing on BOT Chain testnet.</p>
+          </div>
+          <div className="footer-links">
+            <div><strong>Testing</strong><a href="#simulator">Simulator</a><a href="#start-simulation">Replay vault</a><a href="#how-it-works">Agent matrix</a></div>
+            <div><strong>Resources</strong><a href="/api/health">API health</a><a href="https://github.com/Nifemi0/bot-chain-crash-lab" target="_blank" rel="noreferrer">GitHub source</a><a href={`${network.explorerUrl}/tx/${canonicalRun.passport.transactionHash}`} target="_blank" rel="noreferrer">Passport tx</a></div>
+            <div><strong>Network</strong><span>BOT Chain {network.chainId}</span><a href={network.explorerUrl} target="_blank" rel="noreferrer">BOTScan</a><a href={network.rpcUrl} target="_blank" rel="noreferrer">RPC info</a></div>
+            <div><strong>Contracts</strong><a href={`${network.explorerUrl}/address/${contracts.vulnerableVault}`} target="_blank" rel="noreferrer">Vulnerable vault</a><a href={`${network.explorerUrl}/address/${contracts.patchedVault}`} target="_blank" rel="noreferrer">Patched vault</a><a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport</a></div>
+          </div>
         </div>
-      </section>
-
-      <footer>
-        <strong>Crash Lab</strong>
-        <p>Built for BOT Chain · deterministic security evidence · testnet chain {network.chainId}</p>
-        <div><a href="/api/health">API health</a><a href={network.explorerUrl} target="_blank" rel="noreferrer">BOTScan</a></div>
+        <div className="section-shell footer-bottom">
+          <span>© 2026 CRASH LAB V1 · BOT CHAIN NATIVE · CHAIN {network.chainId}</span>
+        </div>
       </footer>
-    </main>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("canonical simulation streams a finding and proof", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /break the accounting/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /break your protocol before mainnet does/i })).toBeVisible();
   await page.getByTestId("start-simulation").click();
   await expect(page.getByTestId("simulation-console")).toBeVisible();
   await expect(page.locator('[data-event-type="invariant.failed"]')).toBeVisible({ timeout: 20_000 });
