@@ -112,7 +112,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
         </div>
         <div className="hero__visual" aria-label="Protocol impact rig visualization">
           <Image
-            src="/images/protocol-impact-rig.webp"
+            src="/images/protocol-impact-rig.svg"
             alt="Mechanical protocol impact rig aimed at a smart-contract vault specimen"
             fill
             priority
