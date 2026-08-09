@@ -1,0 +1,15 @@
+.secrets/
+.env
+.env.local
+.env.*.local
+.next/
+.vercel/
+coverage/
+node_modules/
+playwright-report/
+test-results/
+*.log
+*.tsbuildinfo
+
+# Generated contract compiler cache
+contracts/cache/

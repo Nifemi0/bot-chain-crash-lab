@@ -1,0 +1,19 @@
+{
+  "network": "BOT Chain Testnet",
+  "chainId": 968,
+  "address": "0xA74C46F67C874e2DEE09274e56C642A431776f8B",
+  "authorized": true,
+  "balanceBot": "0.25",
+  "transactions": [
+    {
+      "action": "authorize",
+      "hash": "0xdb50849ba42f04d40f5bb1e1f0dbf5e668872a5f6fef516bf3cb46aa8ae5db91",
+      "blockNumber": 19273555
+    },
+    {
+      "action": "fund",
+      "hash": "0x72f4dfc65497e4d73390c64e24fd3862796b80aee034b6b766a36a958aed3f73",
+      "blockNumber": 19273559
+    }
+  ]
+}

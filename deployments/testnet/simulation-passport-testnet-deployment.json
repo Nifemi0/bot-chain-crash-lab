@@ -1,0 +1,17 @@
+{
+  "product": "Crash Lab",
+  "contract": "SimulationPassport",
+  "network": "BOT Chain Testnet",
+  "chainId": 968,
+  "rpcUrl": "https://rpc.bohr.life",
+  "explorerUrl": "https://scan.bohr.life/address/0x48590156ceC049082695469A1749fED9DeF52eE5",
+  "contractAddress": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "transactionHash": "0x0762e9b7af7f195b853c923487301b945458a97ee38aa0b4b86031daed78dcc2",
+  "blockNumber": 19269406,
+  "gasUsed": "554488",
+  "ownerVerified": true,
+  "publisherVerified": true,
+  "balanceBeforeWei": "10000000000000000000",
+  "balanceAfterWei": "9988910240000000000"
+}

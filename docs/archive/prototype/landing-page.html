@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://api.fontshare.com/v2/css?f[]=barlow-condensed@600,700&f[]=inter-tight@400,600&f[]=ibm-plex-mono@400,600&display=swap" rel="stylesheet">
+  <style>
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.4s;
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .font-display { font-family: 'Barlow Condensed', sans-serif; }
+    .font-body { font-family: 'Inter Tight', sans-serif; }
+    .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #F2EEE6;
+      color: #12110F;
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 72px;
+    }
+
+    .site-nav {
+      background-color: rgba(242, 238, 230, 0);
+      box-shadow: 0 0 0 rgba(18, 17, 15, 0);
+      transition: background-color 280ms ease, box-shadow 280ms ease;
+      will-change: background-color, box-shadow;
+    }
+
+    .nav-inner,
+    .nav-wordmark,
+    .nav-cta {
+      transition-duration: 320ms;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-inner {
+      height: 80px;
+      transition-property: height;
+    }
+
+    .nav-wordmark {
+      transition-property: font-size, letter-spacing;
+    }
+
+    .nav-cta {
+      height: 44px;
+      transition-property: height, padding, background-color;
+    }
+
+    .mobile-nav-toggle {
+      width: 44px;
+      height: 44px;
+    }
+
+    .site-nav.is-scrolled {
+      background-color: #F2EEE6;
+      box-shadow: 0 10px 30px rgba(18, 17, 15, 0.07);
+    }
+
+    .site-nav.is-scrolled .nav-inner {
+      height: 60px;
+    }
+
+    .site-nav.is-scrolled .nav-wordmark {
+      font-size: 22px;
+      letter-spacing: -0.025em;
+    }
+
+    .site-nav.is-scrolled .nav-cta {
+      height: 40px;
+    }
+
+    @media (min-width: 640px) {
+      .nav-cta { height: 48px; }
+      .site-nav.is-scrolled .nav-cta { height: 42px; }
+    }
+
+    @media (max-width: 639px) {
+      .nav-inner { height: 68px; }
+      .site-nav.is-scrolled .nav-inner { height: 60px; }
+      .site-nav .nav-wordmark { font-size: clamp(17px, 4.8vw, 19px); }
+      .site-nav.is-scrolled .nav-wordmark { font-size: clamp(17px, 4.6vw, 18px); }
+      .site-nav .nav-cta,
+      .site-nav.is-scrolled .nav-cta { height: 44px; padding-inline: 14px; }
+      .site-nav.is-scrolled .mobile-nav-panel { top: 68px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .site-nav,
+      .nav-inner,
+      .nav-wordmark,
+      .nav-cta {
+        transition: none !important;
+      }
+    }
+
+    .paper-texture {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+    }
+
+    .impact-rig-mask {
+      isolation: isolate;
+    }
+
+    .hero-art-shell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        rgba(242, 238, 230, 0.96) 0%,
+        rgba(242, 238, 230, 0.88) 42%,
+        rgba(242, 238, 230, 0.42) 72%,
+        rgba(242, 238, 230, 0.10) 100%
+      );
+    }
+
+    @media (min-width: 640px) {
+      .hero-art-shell::after { display: none; }
+    }
+
+    .impact-rig-art {
+      mix-blend-mode: multiply;
+      filter: contrast(1.04) saturate(0.92);
+      -webkit-mask-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.10) 12%,
+        rgba(0, 0, 0, 0.48) 28%,
+        #000 48%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.10) 12%,
+        rgba(0, 0, 0, 0.48) 28%,
+        #000 48%,
+        #000 100%
+      );
+    }
+
+    :focus-visible {
+      outline: 3px solid #F2C230;
+      outline-offset: 3px;
+    }
+
+    .nav-section-link {
+      position: relative;
+    }
+
+    .nav-section-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: -8px;
+      height: 2px;
+      background: #F2C230;
+      transition: right 220ms ease;
+    }
+
+    .nav-section-link.is-active {
+      color: #12110F;
+    }
+
+    .nav-section-link.is-active::after {
+      right: 0;
+    }
+
+    .menu-line {
+      transform-origin: center;
+      transition: transform 220ms ease;
+    }
+
+    [data-mobile-menu-toggle][aria-expanded="true"] .menu-line:first-child {
+      transform: translateY(4px) rotate(45deg);
+    }
+
+    [data-mobile-menu-toggle][aria-expanded="true"] .menu-line:last-child {
+      transform: translateY(-4px) rotate(-45deg);
+    }
+
+    .hero-secondary {
+      background: rgba(242, 238, 230, 0.72);
+      color: #12110F;
+    }
+
+    .hero-secondary:hover {
+      background: #12110F;
+      color: #F2EEE6;
+    }
+
+    .ledger-step {
+      opacity: 0.58;
+      transition: opacity 240ms ease, transform 240ms ease, background-color 240ms ease;
+    }
+
+    .ledger-step.is-active {
+      opacity: 1;
+      transform: translateX(4px);
+      background: rgba(242, 238, 230, 0.035);
+    }
+
+    .ledger-progress-fill {
+      height: 0;
+      transition: height 360ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ledger-step[data-stage="attack"].is-active ~ .ledger-progress .ledger-progress-fill { height: 16%; }
+
+    [data-report-details][hidden],
+    [data-form-result][hidden] {
+      display: none;
+    }
+
+    @media (max-width: 639px) {
+      .ledger-panel { display: none; }
+      .ledger-step.is-active .ledger-panel { display: block; }
+      .ledger-step { opacity: 0.72; transform: none; }
+      .ledger-step.is-active { opacity: 1; transform: none; }
+    }
+
+    @media (min-width: 640px) {
+      .ledger-panel { display: block !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+  <meta name="view-transition" content="same-origin">
+</head>
+<body>
+  <div class="min-h-screen bg-[#F2EEE6] font-body relative flex flex-col">
+    <div class="fixed inset-0 pointer-events-none paper-texture z-50"></div>
+
+    <!-- Compact navigation layered into the hero -->
+    <nav data-site-nav aria-label="Primary" class="site-nav fixed inset-x-0 top-0 z-40">
+      <div class="nav-inner max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-3 sm:gap-6">
+        <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0">
+          <span class="w-4 sm:w-6 h-1 bg-[#F2C230] shrink-0"></span>
+          <span class="nav-wordmark font-display font-bold text-[22px] sm:text-[26px] tracking-[-0.04em] uppercase">BOT / CRASH LAB</span>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-9 font-mono text-[10px] tracking-[0.12em] text-[#6A645B] uppercase">
+          <a id="nav-how-it-works" data-nav-section="how-it-works" href="#how-it-works" class="nav-section-link hover:text-[#12110F] transition-colors">How it works</a>
+          <a id="nav-simulator" data-nav-section="simulator" href="#simulator" class="nav-section-link hover:text-[#12110F] transition-colors">Simulator</a>
+          <a id="nav-passport" data-nav-section="passport" href="#passport" class="nav-section-link hover:text-[#12110F] transition-colors">Passport</a>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <button data-mobile-menu-toggle aria-controls="mobile-nav-panel" aria-expanded="false" aria-label="Open navigation" class="mobile-nav-toggle lg:hidden rounded-full bg-[#12110F] text-[#F2C230] flex items-center justify-center shrink-0">
+            <span class="flex flex-col gap-1.5" aria-hidden="true">
+              <span class="menu-line block w-4 h-[2px] bg-current"></span>
+              <span class="menu-line block w-4 h-[2px] bg-current"></span>
+            </span>
+          </button>
+          <a id="nav-cta-start" href="#start-simulation" class="nav-cta bg-[#F2C230] hover:bg-[#FFD64D] text-[#12110F] border border-[#12110F] font-semibold text-[12px] sm:text-[14px] px-5 sm:px-7 hidden sm:flex items-center rounded-full uppercase shrink-0">
+            <span class="hidden sm:inline">Start a simulation</span>
+            <span class="sm:hidden">Start</span>
+          </a>
+        </div>
+      </div>
+
+      <div id="mobile-nav-panel" data-mobile-menu class="mobile-nav-panel hidden lg:hidden absolute inset-x-4 sm:left-auto sm:right-8 sm:w-72 top-[76px] bg-[#F2EEE6] shadow-[0_18px_45px_rgba(18,17,15,0.16)] p-2 flex-col font-mono text-[11px] tracking-[0.12em] uppercase">
+        <a id="mobile-nav-how-it-works" href="#how-it-works" class="h-12 px-4 flex items-center hover:bg-[#E5DFD3] transition-colors">How it works</a>
+        <a id="mobile-nav-simulator" href="#simulator" class="h-12 px-4 flex items-center hover:bg-[#E5DFD3] transition-colors">Simulator</a>
+        <a id="mobile-nav-passport" href="#passport" class="h-12 px-4 flex items-center hover:bg-[#E5DFD3] transition-colors">Passport</a>
+        <a id="mobile-nav-start" href="#start-simulation" class="h-12 mt-2 px-4 flex items-center justify-center rounded-full bg-[#F2C230] text-[#12110F] font-semibold hover:bg-[#FFD64D] transition-colors">Start a simulation</a>
+      </div>
+    </nav>
+
+    <main class="flex-1">
+      <!-- Hero Section -->
+      <section class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 pt-28 sm:pt-32 lg:pt-36 pb-20 sm:pb-24 lg:pb-32 grid grid-cols-12 relative overflow-hidden">
+        <div class="col-span-12 lg:col-span-7 z-10 min-w-0">
+          <div class="font-mono text-[11px] lg:text-[12px] tracking-[0.08em] sm:tracking-[0.1em] text-[#6A645B] mb-6 sm:mb-8 flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2">
+            <span>BOT CHAIN • CHAIN 677</span>
+            <span class="inline-flex items-center gap-3">
+              <span class="w-1.5 h-1.5 bg-[#F2C230]"></span>
+              <span>DEMO ENVIRONMENT</span>
+            </span>
+          </div>
+          
+          <h1 class="font-display font-bold text-[12.2vw] sm:text-[76px] md:text-[88px] lg:text-[76px] xl:text-[104px] leading-[0.88] tracking-[-0.025em] uppercase mb-8 sm:mb-10 lg:mb-12">
+            <span class="block whitespace-nowrap">Break your</span>
+            <span class="block sm:hidden whitespace-nowrap">Protocol</span>
+            <span class="block sm:hidden whitespace-nowrap">Before</span>
+            <span class="hidden sm:block whitespace-nowrap">Protocol before</span>
+            <span class="block whitespace-nowrap">Mainnet does.</span>
+          </h1>
+
+          <p class="max-w-xl text-[16px] sm:text-[18px] lg:text-[19px] leading-[1.55] text-[#6A645B] mb-8 sm:mb-10 lg:mb-12">
+            Deploy to a controlled adversarial sandbox. Our autonomous agent-wallets physically stress your protocol accounting until the invariant fractures. Same-attack replay verifies your patch.
+          </p>
+
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 lg:gap-6">
+            <a id="hero-spawn" href="#start-simulation" class="w-fit max-w-full sm:w-auto self-start h-12 sm:h-14 bg-[#F2C230] hover:bg-[#FFD64D] text-[#12110F] font-semibold text-[13px] sm:text-[15px] px-7 sm:px-8 lg:px-9 flex items-center justify-center transition-all rounded-full uppercase border border-[#12110F]">
+              Spawn Simulation
+            </a>
+            <a id="hero-watch" href="#simulator" class="hero-secondary w-fit max-w-full sm:w-auto self-start h-12 sm:h-14 border border-[#12110F] font-semibold text-[13px] sm:text-[15px] px-6 sm:px-7 lg:px-8 flex items-center justify-center gap-3 transition-all rounded-full uppercase text-center">
+              <span aria-hidden="true" class="font-mono text-[10px]">▶</span>
+              Watch a protocol break
+            </a>
+          </div>
+          <p class="mt-5 font-mono text-[10px] sm:text-[11px] tracking-[0.08em] text-[#6A645B] uppercase">Isolated local simulation only — never attacks the live contract.</p>
+        </div>
+
+        <!-- The Impact Rig Viewport -->
+        <div class="hero-art-shell absolute right-0 top-0 bottom-0 w-full lg:w-[66%] block">
+          <div class="impact-rig-mask w-full h-full relative overflow-hidden">
+            <!-- Placeholder for Hero Artwork -->
+            <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/9ac13d4b-6e2d-43db-ae5d-808eff331873/external-assets/becd4769-0a15-42a8-a8ed-7b71d5f57774-hero-protocol-impact-rig.png" alt="Physical protocol impact rig striking a smart-contract vault specimen with six transaction actuators" class="impact-rig-art w-full h-full object-cover object-center opacity-[0.34] lg:opacity-100">
+            
+            <!-- Live Specimen Overlay -->
+            <div class="absolute top-12 right-12 text-right hidden lg:block">
+              <div class="font-mono text-[11px] uppercase tracking-widest bg-[#12110F] text-[#F2EEE6] px-3 py-1 mb-2 inline-block">Specimen: V-042</div>
+              <div class="font-mono text-[13px] text-[#12110F] uppercase">Treasury: 100,000 BOT</div>
+            </div>
+
+            <!-- Yellow Calibrated Tape -->
+            <div class="absolute bottom-24 -left-12 right-0 h-10 bg-[#F2C230] rotate-[-5deg] hidden lg:flex items-center overflow-hidden">
+              <div class="whitespace-nowrap font-mono text-[12px] font-bold tracking-[0.3em] text-[#12110F] flex gap-12 animate-marquee">
+                <span>AGENT_23 DISPATCHED</span>
+                <span>TRANSACTION_486 EXECUTING</span>
+                <span>INVARIANT_01 MONITORING</span>
+                <span>AGENT_23 DISPATCHED</span>
+                <span>TRANSACTION_486 EXECUTING</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Full-bleed Yellow Rail -->
+      <div id="how-it-works" class="bg-[#F2C230] py-5 sm:py-6">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-5 lg:gap-8 font-mono text-[10px] lg:text-[11px] font-bold tracking-[0.1em] sm:tracking-[0.16em] lg:tracking-[0.2em] text-[#12110F] uppercase leading-tight">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span class="w-2 h-2 bg-[#12110F]"></span>
+            Real Transactions
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span class="w-2 h-2 bg-[#12110F]"></span>
+            Autonomous Agents
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span class="w-2 h-2 bg-[#12110F]"></span>
+            Invariant Monitoring
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span class="w-2 h-2 bg-[#12110F]"></span>
+            Same-Attack Replay
+          </div>
+        </div>
+      </div>
+
+      <!-- Instrument evidence strip -->
+      <section aria-label="Demonstration evidence" class="bg-[#E5DFD3] py-7 sm:py-9">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-7">
+          <div>
+            <strong class="block font-display text-[34px] sm:text-[42px] leading-none">148</strong>
+            <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.1em] text-[#6A645B] uppercase">Protocols tested</span>
+          </div>
+          <div>
+            <strong class="block font-display text-[34px] sm:text-[42px] leading-none">3,842</strong>
+            <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.1em] text-[#6A645B] uppercase">Invariants checked</span>
+          </div>
+          <div>
+            <strong class="block font-display text-[34px] sm:text-[42px] leading-none">08:42</strong>
+            <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.1em] text-[#6A645B] uppercase">Median simulation</span>
+          </div>
+          <div>
+            <strong class="block font-display text-[34px] sm:text-[42px] leading-none">97.3%</strong>
+            <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.1em] text-[#6A645B] uppercase">Attacks reproducible</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Backend workflow explainer -->
+      <section id="backend-flow" class="bg-[#F2EEE6] py-16 sm:py-24">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+          <div class="grid grid-cols-12 gap-8 lg:gap-12 mb-12 sm:mb-16">
+            <div class="col-span-12 lg:col-span-6">
+              <span class="font-mono text-[11px] tracking-[0.14em] text-[#6A645B] uppercase">Contract → evidence → Passport</span>
+              <h2 class="font-display font-bold text-[46px] sm:text-[62px] leading-[0.92] uppercase mt-3">How the backend works.</h2>
+            </div>
+            <p class="col-span-12 lg:col-span-5 lg:col-start-8 text-[16px] sm:text-[18px] leading-relaxed text-[#6A645B]">The planner proposes bounded attacks. Deterministic execution and invariant checks decide whether the protocol actually fails.</p>
+          </div>
+
+          <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-10">
+            <li>
+              <span class="font-mono text-[11px] text-[#F2C230]">01 / INTAKE</span>
+              <h3 class="font-display text-[24px] font-bold uppercase mt-2">Validate + map</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-[#6A645B]">Confirm BOT Chain bytecode, ABI, roles, entry points, and supported invariants.</p>
+            </li>
+            <li>
+              <span class="font-mono text-[11px] text-[#F2C230]">02 / SANDBOX</span>
+              <h3 class="font-display text-[24px] font-bold uppercase mt-2">Rebuild locally</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-[#6A645B]">Launch an ephemeral Anvil chain with test wallets, artificial capital, and strict cleanup.</p>
+            </li>
+            <li>
+              <span class="font-mono text-[11px] text-[#F2C230]">03 / EXECUTE</span>
+              <h3 class="font-display text-[24px] font-bold uppercase mt-2">Bounded agents</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-[#6A645B]">Schema-validated AI scenarios become real local transactions—never shell commands or production calls.</p>
+            </li>
+            <li>
+              <span class="font-mono text-[11px] text-[#D9362B]">04 / PROVE</span>
+              <h3 class="font-display text-[24px] font-bold uppercase mt-2">Capture failure</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-[#6A645B]">The invariant engine records traces, losses, state deltas, and an executed Foundry reproduction.</p>
+            </li>
+            <li>
+              <span class="font-mono text-[11px] text-[#8FB56F]">05 / REPLAY</span>
+              <h3 class="font-display text-[24px] font-bold uppercase mt-2">Patch + attest</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-[#6A645B]">Compile the fix, replay the identical attack, verify normal users, then publish only the report hash.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Failure Ledger Section -->
+      <section id="simulator" class="bg-[#12110F] text-[#F2EEE6] py-20 sm:py-24 lg:py-32 overflow-hidden">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+          <div class="grid grid-cols-12 gap-6 lg:gap-8 mb-12 sm:mb-16 lg:mb-20">
+            <div class="col-span-12 lg:col-span-6">
+              <h2 class="font-display font-bold text-[10vw] sm:text-[56px] lg:text-[64px] leading-[0.92] uppercase">
+                <span class="block whitespace-nowrap">Inside the Test:</span>
+                <span class="block whitespace-nowrap text-[#F2C230]">Demo Run #0042</span>
+              </h2>
+            </div>
+            <div class="col-span-12 lg:col-span-6 flex items-end justify-start lg:justify-end">
+               <div data-ledger-status class="bg-[#D9362B] text-white px-5 sm:px-7 lg:px-8 py-3 sm:py-4 font-display font-bold text-[20px] sm:text-[26px] lg:text-3xl uppercase tracking-tighter whitespace-nowrap transition-colors">
+                 Protocol Compromised
+               </div>
+            </div>
+          </div>
+
+          <!-- Interactive failure ledger -->
+          <div class="grid grid-cols-12 gap-6 lg:gap-10">
+            <aside aria-label="Simulation progress" class="hidden lg:block col-span-2 relative">
+              <div class="sticky top-28 flex gap-4">
+                <div class="w-[2px] h-64 bg-[#F2EEE6]/15 relative overflow-hidden">
+                  <div data-ledger-progress class="ledger-progress-fill absolute inset-x-0 top-0 bg-[#F2C230]"></div>
+                </div>
+                <div class="font-mono text-[10px] tracking-[0.14em] text-[#AAA297] uppercase leading-loose">
+                  <span class="block text-[#F2EEE6]">Sequence</span>
+                  <span data-ledger-progress-label>01 / 03</span>
+                </div>
+              </div>
+            </aside>
+
+            <div data-ledger class="col-span-12 lg:col-span-10 space-y-3">
+              <article class="ledger-step is-active px-4 sm:px-6 lg:px-8" data-stage="attack">
+                <button type="button" data-ledger-toggle aria-expanded="true" aria-controls="ledger-attack" class="w-full min-h-14 py-4 flex items-center justify-between gap-4 text-left">
+                  <span class="font-mono text-[11px] tracking-widest uppercase text-[#F2C230]">01 / Attack</span>
+                  <span class="font-mono text-[10px] uppercase text-[#AAA297]">Active sequence</span>
+                </button>
+                <div id="ledger-attack" class="ledger-panel pb-7 sm:pb-8 grid grid-cols-12 gap-4 lg:gap-8 items-start">
+                  <div class="col-span-12 lg:col-span-6">
+                    <h3 class="font-display text-[26px] sm:text-[30px] leading-tight font-bold uppercase mb-2">Signal-Yellow Ingress</h3>
+                    <p class="text-[15px] leading-relaxed text-[#AAA297]">Agent 23 dispatches a multi-hop flash-loan sequence targeting share accounting.</p>
+                  </div>
+                  <div class="col-span-11 lg:col-span-5 font-mono text-[12px] sm:text-[13px] leading-relaxed text-[#F2C230] break-words">
+                    <span class="block">TXN_ID: 0x5a1...9e0</span>
+                    <span class="block">10 BOT → 82,410 BOT</span>
+                  </div>
+                  <span aria-hidden="true" class="col-span-1 justify-self-end mt-1 w-4 h-4 bg-[#F2C230]"></span>
+                </div>
+              </article>
+
+              <article class="ledger-step px-4 sm:px-6 lg:px-8" data-stage="impact">
+                <button type="button" data-ledger-toggle aria-expanded="false" aria-controls="ledger-impact" class="w-full min-h-14 py-4 flex items-center justify-between gap-4 text-left">
+                  <span class="font-mono text-[11px] tracking-widest uppercase text-[#D9362B]">02 / Impact</span>
+                  <span class="font-mono text-[10px] uppercase text-[#AAA297]">Invariant failure</span>
+                </button>
+                <div id="ledger-impact" class="ledger-panel pb-7 sm:pb-8 grid grid-cols-12 gap-4 lg:gap-8 items-start">
+                  <div class="col-span-12 lg:col-span-6">
+                    <h3 class="font-display text-[26px] sm:text-[30px] leading-tight font-bold uppercase mb-2">Invariant Fracture</h3>
+                    <p class="text-[15px] leading-relaxed text-[#AAA297]">The vault fractures under extreme withdrawal while live accounting diverges from reserves.</p>
+                  </div>
+                  <div class="col-span-11 lg:col-span-5 font-mono text-[12px] sm:text-[13px] leading-relaxed text-[#D9362B] break-words">INV-01 FAIL: totalAssets &lt; totalShares</div>
+                  <span aria-hidden="true" class="col-span-1 justify-self-end mt-1 w-4 h-4 bg-[#D9362B]"></span>
+                </div>
+              </article>
+
+              <article class="ledger-step px-4 sm:px-6 lg:px-8" data-stage="replay">
+                <button type="button" data-ledger-toggle aria-expanded="false" aria-controls="ledger-replay" class="w-full min-h-14 py-4 flex items-center justify-between gap-4 text-left">
+                  <span class="font-mono text-[11px] tracking-widest uppercase text-[#8FB56F]">03 / Verified replay</span>
+                  <span class="font-mono text-[10px] uppercase text-[#AAA297]">Attack rejected</span>
+                </button>
+                <div id="ledger-replay" class="ledger-panel pb-7 sm:pb-8 grid grid-cols-12 gap-4 lg:gap-8 items-start">
+                  <div class="col-span-12 lg:col-span-6">
+                    <h3 class="font-display text-[26px] sm:text-[30px] leading-tight font-bold uppercase mb-2">Verification Loop</h3>
+                    <p class="text-[15px] leading-relaxed text-[#AAA297]">The proposed virtual-share offset patch survives the exact same transaction sequence.</p>
+                  </div>
+                  <div class="col-span-11 lg:col-span-5 font-mono text-[12px] sm:text-[13px] leading-relaxed text-[#8FB56F] break-words">REPLAY SUCCESS: exploit rejected</div>
+                  <span aria-hidden="true" class="col-span-1 justify-self-end mt-1 w-4 h-4 bg-[#8FB56F]"></span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Post-replay report -->
+      <section id="report" class="bg-[#F2EEE6] py-16 sm:py-24 lg:py-28">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+          <div class="grid grid-cols-12 gap-7 lg:gap-10 items-end mb-10 sm:mb-14">
+            <div class="col-span-12 lg:col-span-7">
+              <span class="font-mono text-[11px] tracking-[0.14em] text-[#6A645B] uppercase">Post-replay report / SIM-0042</span>
+              <h2 class="font-display font-bold text-[48px] sm:text-[64px] lg:text-[76px] leading-[0.9] uppercase mt-3">Finding remediated.</h2>
+            </div>
+            <div class="col-span-12 lg:col-span-5 lg:text-right">
+              <strong class="font-display text-[56px] sm:text-[72px] leading-none text-[#D9362B]">01</strong>
+              <span class="block font-mono text-[11px] tracking-widest text-[#6A645B] uppercase">Finding / replay rejected</span>
+            </div>
+          </div>
+
+          <dl class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8 bg-[#E5DFD3] p-6 sm:p-8 lg:p-10">
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Contract</dt><dd class="font-mono text-[12px] sm:text-[13px] break-all mt-2">0x6770...0042</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Source commit</dt><dd class="font-mono text-[12px] sm:text-[13px] mt-2">abc123</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Chain ID</dt><dd class="font-display text-[28px] mt-1">677</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Status</dt><dd class="font-mono text-[12px] sm:text-[13px] text-[#8FB56F] uppercase mt-2">Remediated</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Agents</dt><dd class="font-display text-[28px] mt-1">32</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Transactions</dt><dd class="font-display text-[28px] mt-1">486</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Invariants passed</dt><dd class="font-display text-[28px] mt-1">5 / 6</dd></div>
+            <div><dt class="font-mono text-[10px] text-[#6A645B] uppercase">Replay status</dt><dd class="font-mono text-[12px] sm:text-[13px] text-[#8FB56F] break-words mt-2">attack_rejected</dd></div>
+          </dl>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 mt-6 font-mono text-[11px] sm:text-[12px]">
+            <div class="bg-[#12110F] text-[#F2EEE6] p-5 sm:p-6">
+              <span class="text-[#D9362B] uppercase">Original / failed</span>
+              <dl class="mt-4 space-y-2 text-[#AAA297]"><div class="flex justify-between gap-4"><dt>Transaction 6</dt><dd class="text-[#F2EEE6]">Succeeded</dd></div><div class="flex justify-between gap-4"><dt>Attacker profit</dt><dd class="text-[#D9362B]">82,400 BOT</dd></div><div class="flex justify-between gap-4"><dt>Invariant</dt><dd class="text-[#D9362B]">Failed</dd></div></dl>
+            </div>
+            <div class="bg-[#E5DFD3] p-5 sm:p-6">
+              <span class="text-[#8FB56F] uppercase">Patched / verified</span>
+              <dl class="mt-4 space-y-2 text-[#6A645B]"><div class="flex justify-between gap-4"><dt>Transaction 6</dt><dd class="text-[#12110F]">Reverted</dd></div><div class="flex justify-between gap-4"><dt>Attacker profit</dt><dd class="text-[#8FB56F]">0 BOT</dd></div><div class="flex justify-between gap-4"><dt>Normal withdrawals</dt><dd class="text-[#8FB56F]">Passed</dd></div></dl>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <button id="view-report-details" type="button" aria-expanded="false" aria-controls="report-details" class="w-fit h-12 px-7 rounded-full bg-[#12110F] text-[#F2EEE6] font-semibold text-[13px] uppercase">View full off-chain report</button>
+            <span class="font-mono text-[10px] sm:text-[11px] text-[#6A645B] uppercase break-all">Report hash: 0x7a42...d991</span>
+          </div>
+          <pre id="report-details" data-report-details hidden class="mt-6 p-5 sm:p-7 overflow-x-auto bg-[#12110F] text-[#F2EEE6] font-mono text-[11px] sm:text-[12px] leading-relaxed"><code>{
+  &quot;simulationId&quot;: &quot;SIM-0042&quot;,
+  &quot;contractAddress&quot;: &quot;0x6770...0042&quot;,
+  &quot;sourceCommit&quot;: &quot;abc123&quot;,
+  &quot;chainId&quot;: 677,
+  &quot;agentCount&quot;: 32,
+  &quot;transactionCount&quot;: 486,
+  &quot;findings&quot;: 1,
+  &quot;invariantsPassed&quot;: 5,
+  &quot;replayStatus&quot;: &quot;attack_rejected&quot;,
+  &quot;reportHash&quot;: &quot;0x7a42...d991&quot;,
+  &quot;status&quot;: &quot;remediated&quot;
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- On-chain Passport proof -->
+      <section id="passport" class="bg-[#E5DFD3] py-16 sm:py-24">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-12 gap-10 lg:gap-14">
+          <div class="col-span-12 lg:col-span-5">
+            <span class="font-mono text-[11px] tracking-[0.14em] text-[#6A645B] uppercase">BOT Chain Passport</span>
+            <h2 class="font-display font-bold text-[44px] sm:text-[58px] leading-[0.92] uppercase mt-3 mb-6">Small proof.<br>Full report off-chain.</h2>
+            <p class="text-[16px] sm:text-[18px] leading-relaxed text-[#6A645B]">Only a compact cryptographic record is published to the Passport contract. Sensitive report details remain off-chain.</p>
+          </div>
+          <div class="col-span-12 lg:col-span-7">
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 font-mono text-[12px]">
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Contract address</dt><dd class="mt-1 break-all">0x6770...0042</dd></div>
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Source / bytecode hash</dt><dd class="mt-1 break-all">0xa31c...88fe</dd></div>
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Report hash</dt><dd class="mt-1 break-all">0x7a42...d991</dd></div>
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Status</dt><dd class="mt-1 text-[#8FB56F] uppercase">Remediated</dd></div>
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Timestamp</dt><dd class="mt-1">2026-08-09 14:26 UTC</dd></div>
+              <div><dt class="text-[#6A645B] uppercase text-[10px]">Tool version</dt><dd class="mt-1">crash-lab v0.9.4</dd></div>
+            </dl>
+            <p class="mt-10 pt-6 font-mono text-[11px] sm:text-[12px] leading-relaxed uppercase text-[#12110F] max-w-2xl">This proves that a specific report existed at a particular time. It does not claim the protocol is universally safe.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lean backend architecture -->
+      <section id="backend-services" class="bg-[#12110F] text-[#F2EEE6] py-14 sm:py-20">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div class="col-span-12 lg:col-span-5">
+            <span class="font-mono text-[11px] tracking-[0.14em] text-[#F2C230] uppercase">Hackathon architecture</span>
+            <h2 class="font-display font-bold text-[40px] sm:text-[52px] leading-[0.92] uppercase mt-3">Lean backend.<br>Auditable flow.</h2>
+          </div>
+          <pre class="col-span-12 lg:col-span-7 font-mono text-[12px] sm:text-[13px] leading-[1.9] text-[#AAA297] overflow-x-auto"><code>backend/
+├── api/
+│   ├── simulations
+│   ├── events
+│   ├── reports
+│   └── passports
+├── analyzer/
+│   ├── abi-parser
+│   └── protocol-model
+├── planner/
+│   ├── llm-client
+│   └── scenario-schema
+├── runner/
+│   ├── anvil-manager
+│   ├── agent-executor
+│   └── snapshots
+├── invariants/
+│   ├── solvency
+│   ├── authorization
+│   └── vault-accounting
+├── evidence/
+│   ├── trace-parser
+│   └── foundry-generator
+├── repair/
+│   ├── patch-generator
+│   └── replay-runner
+└── contracts/
+    └── SimulationPassport.sol</code></pre>
+
+          <div class="col-span-12 mt-4 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div>
+              <h3 class="font-display text-[26px] font-bold uppercase">API flow</h3>
+              <ol class="mt-4 space-y-3 font-mono text-[11px] sm:text-[12px] text-[#AAA297]">
+                <li><span class="text-[#F2C230]">POST</span> /api/simulations → create ID</li>
+                <li><span class="text-[#F2C230]">GET</span> /api/simulations/{id}/events → live SSE</li>
+                <li><span class="text-[#F2C230]">GET</span> /api/simulations/{id}/finding → evidence</li>
+                <li><span class="text-[#F2C230]">POST</span> /api/simulations/{id}/patch → compile</li>
+                <li><span class="text-[#F2C230]">POST</span> /api/simulations/{id}/replay → exact rerun</li>
+                <li><span class="text-[#F2C230]">POST</span> /api/simulations/{id}/passport → publish hash</li>
+              </ol>
+            </div>
+            <div>
+              <h3 class="font-display text-[26px] font-bold uppercase">MVP boundary</h3>
+              <p class="mt-4 text-[15px] leading-relaxed text-[#AAA297]">One deliberately vulnerable ERC-4626 vault. One deterministic share-inflation scenario. One compiled repair. One exact replay. One on-chain report hash.</p>
+              <p class="mt-4 font-mono text-[11px] leading-relaxed text-[#F2C230] uppercase">Universal contract understanding comes later. The demo proves a narrow, reproducible security workflow.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Start Call to Action -->
+      <section id="start-simulation" class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-14 sm:py-24 lg:py-32 flex justify-center">
+        <div id="launchpad" class="w-full max-w-4xl bg-[#E5DFD3] p-6 pt-16 sm:p-10 sm:pt-16 lg:p-16 relative">
+          <div class="absolute top-0 right-5 sm:right-10 lg:right-12 w-24 h-8 bg-[#12110F] text-[#F2EEE6] font-mono text-[9px] flex items-center justify-center uppercase tracking-widest">Calibration OK</div>
+          <div class="mb-8 sm:mb-10 lg:mb-12">
+            <h2 class="font-display font-bold text-[40px] sm:text-[48px] leading-[0.95] uppercase mb-5 sm:mb-6">Ready for the Impact?</h2>
+            <p class="text-[#6A645B] text-[16px] sm:text-lg leading-relaxed max-w-2xl">Submit your contract address. Our autonomous agents will begin the stress sequence immediately. Demo results are visibly labeled.</p>
+          </div>
+          <div class="mb-5 flex flex-wrap items-center gap-3 font-mono text-[10px] sm:text-[11px] uppercase">
+            <span class="inline-flex items-center gap-2 bg-[#12110F] text-[#F2EEE6] px-3 py-2"><span class="w-2 h-2 bg-[#8FB56F]"></span> BOT Chain 677</span>
+            <button id="use-example-address" type="button" class="min-h-11 px-3 text-[#6A645B] underline underline-offset-4">Use example address</button>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="w-full min-w-0 flex-1">
+              <label for="contract-address" class="block mb-2 font-mono text-[11px] sm:text-[12px] font-semibold tracking-[0.1em] uppercase text-[#6A645B]">Contract address</label>
+              <input id="contract-address" aria-describedby="contract-status" autocomplete="off" spellcheck="false" type="text" placeholder="ENTER BOT CHAIN ADDRESS (0x...)" class="w-full min-w-0 h-[60px] sm:h-16 bg-[#F7F3EA] border-[1.5px] border-[#6A645B] rounded-none px-4 sm:px-6 font-mono text-[13px] sm:text-[14px] focus:outline-none focus:border-[#F2C230] transition-colors">
+            </div>
+            <button id="submit-contract" class="w-fit max-w-full self-start sm:self-end h-12 sm:h-16 bg-[#F2C230] text-[#12110F] border border-[#12110F] rounded-full px-6 sm:px-10 font-display font-bold text-[15px] sm:text-base uppercase tracking-[0.06em] sm:tracking-widest whitespace-nowrap hover:bg-[#FFD64D] transition-colors disabled:opacity-70">Begin Simulation</button>
+          </div>
+          <p id="contract-status" role="status" aria-live="polite" class="min-h-6 mt-3 font-mono text-[11px] text-[#6A645B]"></p>
+          <p class="font-mono text-[10px] leading-relaxed text-[#6A645B] uppercase">RPC locked to rpc.botchain.ai · isolated Anvil copy · ephemeral wallets · no real keys or funds</p>
+          <div data-form-result hidden class="mt-6 bg-[#12110F] text-[#F2EEE6] p-5 sm:p-6">
+            <span class="font-mono text-[10px] text-[#8FB56F] uppercase">Simulation queued</span>
+            <strong data-simulation-heading class="block font-display text-[28px] uppercase mt-1">Simulation initializing</strong>
+            <div data-event-stream class="mt-5 space-y-2 font-mono text-[10px] sm:text-[11px] text-[#AAA297]" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 sm:py-20 bg-[#F2EEE6]">
+      <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-12 gap-8 sm:gap-12">
+        <div class="col-span-12 lg:col-span-4 space-y-6">
+          <div class="flex flex-col leading-none">
+            <span class="font-display font-bold text-2xl tracking-tighter uppercase">BOT / CRASH LAB</span>
+            <span class="font-mono text-[11px] tracking-[0.08em] sm:tracking-[0.1em] text-[#6A645B]">EXPERIMENTAL PROTOCOL HARDENING</span>
+          </div>
+          <p class="text-[14px] text-[#6A645B] max-w-xs">
+            A disciplined environment for adversarial contract stress-testing on BOT Chain (Chain ID 677).
+          </p>
+        </div>
+        <div class="col-span-12 lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 sm:gap-8 font-mono text-[11px] tracking-[0.08em] sm:tracking-widest uppercase text-[#6A645B] leading-relaxed">
+          <div class="flex flex-col gap-4">
+            <span class="text-[#12110F] font-bold">Testing</span>
+            <a id="footer-simulator" href="#simulator" class="hover:text-[#12110F] transition-colors">Simulator</a>
+            <a id="footer-report" href="#report" class="hover:text-[#12110F] transition-colors">Replay Report</a>
+            <span class="text-[#AAA297]">Agent Matrix / Coming Soon</span>
+          </div>
+          <div class="flex flex-col gap-4">
+            <span class="text-[#12110F] font-bold">Resources</span>
+            <a id="footer-architecture" href="#backend-services" class="hover:text-[#12110F] transition-colors">Architecture</a>
+            <span class="text-[#AAA297]">API Access / Coming Soon</span>
+            <span class="text-[#AAA297]">Foundry Repro / Coming Soon</span>
+          </div>
+          <div class="flex flex-col gap-4">
+            <span class="text-[#12110F] font-bold">Network</span>
+            <span class="text-[#12110F]">BOT CHAIN 677</span>
+            <a id="footer-passport" href="#passport" class="hover:text-[#12110F] transition-colors">Passport Proof</a>
+            <span class="text-[#AAA297]">RPC Info / Coming Soon</span>
+          </div>
+          <div class="flex flex-col gap-4">
+            <span class="text-[#12110F] font-bold">Connect</span>
+            <span class="text-[#AAA297]">X / Coming Soon</span>
+            <span class="text-[#AAA297]">GitHub / Coming Soon</span>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 mt-10 sm:mt-20 pt-4 sm:pt-8 flex items-center font-mono text-[10px] tracking-[0.1em] sm:tracking-[0.2em] text-[#6A645B] uppercase">
+        <span>© 2024 CRASH LAB V.1 — BOT CHAIN NATIVE</span>
+      </div>
+    </footer>
+  </div>
+
+  <style>
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      animation: marquee 20s linear infinite;
+    }
+  </style>
+  <script>
+    (() => {
+      const nav = document.querySelector('[data-site-nav]');
+      if (!nav) return;
+
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const menuToggle = nav.querySelector('[data-mobile-menu-toggle]');
+      const mobileMenu = nav.querySelector('[data-mobile-menu]');
+
+      const closeMobileMenu = () => {
+        if (!menuToggle || !mobileMenu) return;
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('flex');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Open navigation');
+      };
+
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+          const willOpen = mobileMenu.classList.contains('hidden');
+          mobileMenu.classList.toggle('hidden', !willOpen);
+          mobileMenu.classList.toggle('flex', willOpen);
+          menuToggle.setAttribute('aria-expanded', String(willOpen));
+          menuToggle.setAttribute('aria-label', willOpen ? 'Close navigation' : 'Open navigation');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', closeMobileMenu);
+        });
+
+        window.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') closeMobileMenu();
+        });
+
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 1024) closeMobileMenu();
+        });
+      }
+
+      let ticking = false;
+      const updateNav = () => {
+        nav.classList.toggle('is-scrolled', window.scrollY > 36);
+
+        const heroArt = document.querySelector('.impact-rig-art');
+        if (heroArt && !reducedMotion && window.innerWidth >= 1024) {
+          const shift = Math.min(window.scrollY * 0.055, 24);
+          heroArt.style.transform = `translate3d(0, ${shift}px, 0) scale(1.03)`;
+        }
+        ticking = false;
+      };
+
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateNav);
+      };
+
+      updateNav();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      const navLinks = [...nav.querySelectorAll('[data-nav-section]')];
+      const trackedSections = navLinks
+        .map((link) => document.getElementById(link.dataset.navSection))
+        .filter(Boolean);
+
+      if ('IntersectionObserver' in window) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          navLinks.forEach((link) => {
+            const active = link.dataset.navSection === visible.target.id;
+            link.classList.toggle('is-active', active);
+            if (active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        }, { rootMargin: '-28% 0px -58% 0px', threshold: [0, 0.15, 0.45] });
+        trackedSections.forEach((section) => sectionObserver.observe(section));
+      }
+
+      const ledgerSteps = [...document.querySelectorAll('[data-ledger] .ledger-step')];
+      const ledgerProgress = document.querySelector('[data-ledger-progress]');
+      const ledgerProgressLabel = document.querySelector('[data-ledger-progress-label]');
+      const ledgerStatus = document.querySelector('[data-ledger-status]');
+      const ledgerStates = {
+        attack: { progress: '16%', label: '01 / 03', text: 'Attack in progress', color: '#F2C230', ink: '#12110F' },
+        impact: { progress: '58%', label: '02 / 03', text: 'Protocol compromised', color: '#D9362B', ink: '#FFFFFF' },
+        replay: { progress: '100%', label: '03 / 03', text: 'Patch verified', color: '#8FB56F', ink: '#12110F' }
+      };
+
+      const activateLedgerStep = (step) => {
+        const state = ledgerStates[step.dataset.stage];
+        ledgerSteps.forEach((candidate) => {
+          const active = candidate === step;
+          candidate.classList.toggle('is-active', active);
+          candidate.querySelector('[data-ledger-toggle]')?.setAttribute('aria-expanded', String(active));
+        });
+        if (ledgerProgress) ledgerProgress.style.height = state.progress;
+        if (ledgerProgressLabel) ledgerProgressLabel.textContent = state.label;
+        if (ledgerStatus) {
+          ledgerStatus.textContent = state.text;
+          ledgerStatus.style.backgroundColor = state.color;
+          ledgerStatus.style.color = state.ink;
+          if (!reducedMotion) ledgerStatus.animate(
+            [{ transform: 'scale(0.98)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }],
+            { duration: 380, easing: 'ease-out' }
+          );
+        }
+      };
+
+      ledgerSteps.forEach((step) => {
+        step.querySelector('[data-ledger-toggle]')?.addEventListener('click', () => activateLedgerStep(step));
+      });
+      if (ledgerSteps[0]) activateLedgerStep(ledgerSteps[0]);
+
+      if ('IntersectionObserver' in window && window.innerWidth >= 640) {
+        const ledgerObserver = new IntersectionObserver((entries) => {
+          const active = entries.find((entry) => entry.isIntersecting);
+          if (active) activateLedgerStep(active.target);
+        }, { rootMargin: '-38% 0px -48% 0px', threshold: 0.2 });
+        ledgerSteps.forEach((step) => ledgerObserver.observe(step));
+      }
+
+      const reportToggle = document.getElementById('view-report-details');
+      const reportDetails = document.getElementById('report-details');
+      reportToggle?.addEventListener('click', () => {
+        const willOpen = reportDetails.hasAttribute('hidden');
+        reportDetails.toggleAttribute('hidden', !willOpen);
+        reportToggle.setAttribute('aria-expanded', String(willOpen));
+        reportToggle.textContent = willOpen ? 'Hide off-chain report' : 'View full off-chain report';
+      });
+
+      const contractInput = document.getElementById('contract-address');
+      const contractButton = document.getElementById('submit-contract');
+      const contractStatus = document.getElementById('contract-status');
+      const formResult = document.querySelector('[data-form-result]');
+      const exampleButton = document.getElementById('use-example-address');
+      const exampleAddress = '0x6770000000000000000000000000000000000042';
+
+      exampleButton?.addEventListener('click', () => {
+        contractInput.value = exampleAddress;
+        contractInput.focus();
+        contractStatus.textContent = 'Example contract loaded. Ready to simulate.';
+        contractStatus.style.color = '#6A645B';
+      });
+
+      contractButton?.addEventListener('click', async () => {
+        const value = contractInput.value.trim();
+        const valid = /^0x[a-fA-F0-9]{40}$/.test(value);
+        formResult.setAttribute('hidden', '');
+        if (!valid) {
+          contractInput.setAttribute('aria-invalid', 'true');
+          contractInput.style.borderColor = '#D9362B';
+          contractStatus.textContent = 'Enter a valid 42-character EVM contract address.';
+          contractStatus.style.color = '#D9362B';
+          contractInput.focus();
+          return;
+        }
+
+        contractInput.removeAttribute('aria-invalid');
+        contractInput.style.borderColor = '#6A645B';
+        contractButton.disabled = true;
+        contractButton.textContent = 'Deploying adversarial agents…';
+        contractStatus.textContent = 'BOT Chain 677 confirmed. Creating isolated simulation.';
+        contractStatus.style.color = '#6A645B';
+
+        try {
+          const response = await fetch('/api/simulations', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              contractAddress: value,
+              network: 'botchain',
+              agentCount: 32,
+              intensity: 'high',
+              demoMode: value === exampleAddress,
+              invariants: ['solvency', 'no_unauthorized_withdrawals', 'asset_share_consistency']
+            })
+          });
+          const simulation = await response.json();
+          if (!response.ok) throw new Error(simulation.error || 'Simulation could not be created.');
+
+          const heading = formResult.querySelector('[data-simulation-heading]');
+          const stream = formResult.querySelector('[data-event-stream]');
+          heading.textContent = `${simulation.simulationId} / 32 agents assigned`;
+          stream.replaceChildren();
+          formResult.removeAttribute('hidden');
+          contractStatus.textContent = `${simulation.simulationId} created. Live event stream connected.`;
+          contractStatus.style.color = '#8FB56F';
+
+          const events = new EventSource(simulation.eventsUrl);
+          events.onmessage = (event) => {
+            const item = JSON.parse(event.data);
+            const row = document.createElement('p');
+            row.textContent = `${item.sequence.toString().padStart(2, '0')}  ${item.type}  ${item.message}`;
+            row.style.color = item.type === 'invariant.failed' ? '#D9362B' : item.type === 'replay.completed' ? '#8FB56F' : '#AAA297';
+            stream.appendChild(row);
+            if (item.type === 'simulation.completed') {
+              events.close();
+              contractButton.disabled = false;
+              contractButton.textContent = 'View simulation report';
+              contractButton.onclick = () => document.getElementById('report').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+            }
+          };
+          events.onerror = () => {
+            events.close();
+            contractButton.disabled = false;
+            contractButton.textContent = 'Reconnect simulation';
+            contractStatus.textContent = 'The live stream disconnected. The simulation report remains available.';
+          };
+        } catch (error) {
+          contractButton.disabled = false;
+          contractButton.textContent = 'Begin simulation';
+          contractStatus.textContent = error.message;
+          contractStatus.style.color = '#D9362B';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

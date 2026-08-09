@@ -1,0 +1,50 @@
+{
+  "network": {
+    "name": "BOT Chain Testnet",
+    "chainId": 968,
+    "rpcUrl": "https://rpc.bohr.life",
+    "explorerUrl": "https://scan.bohr.life"
+  },
+  "contracts": {
+    "passport": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+    "mockBot": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+    "vulnerableVault": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+    "patchedVault": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+  },
+  "attack": {
+    "transactionHashes": [
+      "0x76d096f4b766a951c5922b155684ac50434d1c2b9668267c8bfcb7c63c41816a",
+      "0xf9e22d1a6254677bcc4401eb398d6480fc523c4dbc62fc52f8b31bf0b738ef64",
+      "0x1dc49f0dab9d8385eba84285359cd6af87f501249e596ec318969136bb10e78d",
+      "0xa3ff2f2438960e0cd0c8b83ba000cba53f9201aec7a45bd87b5eab70da62ebac",
+      "0x16c327b8dc1667d70435b5365e6e09f88c889e7ada14891fab55e8bf804ddd68",
+      "0x2910a47ab2517279e128e61d549a26cdf02d7364796e22b5092c34c01a4140e8",
+      "0x972ad14ea18cf18172073ba974ba7d75ba0ca2b94c62da22804e401e9679a660",
+      "0x83b9bf3d114cb2136e20dbc8b5421e8dc4cef632d49e557640f9cdc1b3cc1235",
+      "0x5b757d14d916402f6ab658b8a9998b0e0700ab013e55f1865b7c410e5b00786b"
+    ],
+    "victimShares": "0",
+    "attackerRecoveredAssets": "2.000000000000000001"
+  },
+  "replay": {
+    "transactionHashes": [
+      "0x74afe1ed85947d0631c72055a5c18242026d9260e034a20bc5cab56b916bc139",
+      "0xb595c90c6656bade1c318dde0d8ea1372143afa893a3ec5d015fca7c0ae6b7f3",
+      "0xdc073d85c1087786fbdd091fafefd3e4b7036632e5d7781fb3a09ad6c3a73f86",
+      "0x630fc9c4ff265f0dc25fa4e4832145802a2567fb93287cd11a7fff5bc7284958",
+      "0x96941edac79991ca7bfd61836d0a9081c3fb3cdc9e76edeb2e4f6f9202d9373e"
+    ],
+    "victimShares": "500000000000000000",
+    "invariantHeld": true
+  },
+  "passport": {
+    "contractAddress": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+    "simulationId": "0xed8d64bd9a22a0e516ec86010bf5ddf2e28854f0a6540ed7d5d200710bffce9e",
+    "reportHash": "0xb2f67d0ac33aa6966d02e9494a4c25a2a973dd7e5d78642033a9a7bafa685580",
+    "sourceHash": "0xc3a5f20a8a30492ecef5fea31ee146530e7abf7e996f46507e816277deae0539",
+    "transactionHash": "0x114ffdac62f9ebbab40e2f0559bb457611925aa41b16c5ce8ee85a56a40a868d",
+    "blockNumber": 19273637,
+    "publisher": "0xA74C46F67C874e2DEE09274e56C642A431776f8B"
+  },
+  "generatedAt": "2026-08-09T15:47:54.294Z"
+}

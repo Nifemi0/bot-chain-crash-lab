@@ -1,0 +1,19 @@
+{
+  "product": "Crash Lab",
+  "network": "BOT Chain Testnet",
+  "chainId": 968,
+  "mockBot": {
+    "address": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+    "transactionHash": "0xe8dbb2685190f8ff551c66ae694353ab9f3d875b65b5e316b49cc48718b7f68e",
+    "blockNumber": 19270841
+  },
+  "vulnerableVault": {
+    "address": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+    "transactionHash": "0x266be1f33010b27ebc10d1f3fca4fc743c6dedf89ab8ee80aee53a97d0a79e3f",
+    "blockNumber": 19270844
+  },
+  "explorerUrls": {
+    "token": "https://scan.bohr.life/address/0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+    "vault": "https://scan.bohr.life/address/0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA"
+  }
+}

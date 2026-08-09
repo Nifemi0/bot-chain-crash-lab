@@ -1,0 +1,333 @@
+{
+  "contractName": "SimulationPassport",
+  "sourceName": "SimulationPassport.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidHash",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidProtocol",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidPublisher",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidSimulationId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidStatus",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotPublisher",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PassportAlreadyExists",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "simulationId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "protocol",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "reportHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "sourceHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum SimulationPassport.Status",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "timestamp",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "toolVersion",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        }
+      ],
+      "name": "PassportPublished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "authorized",
+          "type": "bool"
+        }
+      ],
+      "name": "PublisherUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "simulationId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "exists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "simulationId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPassport",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "protocol",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "sourceHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "reportHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "enum SimulationPassport.Status",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint64",
+              "name": "timestamp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "toolVersion",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "publisher",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct SimulationPassport.Passport",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "simulationId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "protocol",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "sourceHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "reportHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "enum SimulationPassport.Status",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "toolVersion",
+          "type": "bytes32"
+        }
+      ],
+      "name": "publish",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "publishers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "authorized",
+          "type": "bool"
+        }
+      ],
+      "name": "setPublisher",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561000f575f80fd5b505f80546001600160a01b031916339081178255808252600160208190526040808420805460ff1916909217909155519091907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a36040516001815233907fdfd87d205b27ab761c75f0d3d9fcc6f0a6c8aefb93971bf081775600091fc9989060200160405180910390a2610829806100aa5f395ff3fe608060405234801561000f575f80fd5b506004361061007a575f3560e01c8063618bb07911610058578063618bb079146100fd5780638da5cb5b14610110578063f227fa231461013a578063f2fde38b1461015a575f80fd5b80630a4d85cd1461007e57806334650503146100b557806338a699a4146100ca575b5f80fd5b6100a061008c366004610644565b60016020525f908152604090205460ff1681565b60405190151581526020015b60405180910390f35b6100c86100c3366004610664565b61016d565b005b6100a06100d83660046106bf565b5f90815260026020526040902060030154610100900467ffffffffffffffff16151590565b6100c861010b3660046106d6565b6103f4565b5f54610122906001600160a01b031681565b6040516001600160a01b0390911681526020016100ac565b61014d6101483660046106bf565b6104a3565b6040516100ac9190610743565b6100c8610168366004610644565b610589565b335f9081526001602052604090205460ff1661019c57604051633664441d60e11b815260040160405180910390fd5b856101ba5760405163323f1a3560e11b815260040160405180910390fd5b6001600160a01b0385166101e1576040516301fc71f560e21b815260040160405180910390fd5b8315806101ec575082155b15610209576040516257c03760e51b815260040160405180910390fd5b5f82600381111561021c5761021c61070f565b0361023a576040516307a92f1960e51b815260040160405180910390fd5b5f86815260026020526040902060030154610100900467ffffffffffffffff161561027857604051635bebc7ad60e11b815260040160405180910390fd5b5f4290506040518060e00160405280876001600160a01b031681526020018681526020018581526020018460038111156102b4576102b461070f565b815267ffffffffffffffff83166020808301919091526040808301869052336060938401525f8b8152600280845290829020855181546001600160a01b0319166001600160a01b03909116178155928501516001808501919091559185015190830155918301516003808301805493949293909260ff199091169184908111156103405761034061070f565b0217905550608082015160038201805468ffffffffffffffff00191661010067ffffffffffffffff9093169290920291909117905560a0820151600482015560c090910151600590910180546001600160a01b0319166001600160a01b03928316179055604051859188169089907f41a87ae829b24f17c924a5e9eaebd5683b1c8c1ca6f2107051c68d1eaa4ad1cd906103e3908a90899088908a9033906107b0565b60405180910390a450505050505050565b5f546001600160a01b0316331461041e576040516330cd747160e01b815260040160405180910390fd5b6001600160a01b038216610445576040516314757fcb60e11b815260040160405180910390fd5b6001600160a01b0382165f81815260016020908152604091829020805460ff191685151590811790915591519182527fdfd87d205b27ab761c75f0d3d9fcc6f0a6c8aefb93971bf081775600091fc998910160405180910390a25050565b6040805160e0810182525f80825260208201819052918101829052606081018290526080810182905260a0810182905260c08101919091525f82815260026020818152604092839020835160e08101855281546001600160a01b031681526001820154928101929092529182015492810192909252600380820154606084019160ff909116908111156105385761053861070f565b60038111156105495761054961070f565b81526003820154610100900467ffffffffffffffff166020820152600482015460408201526005909101546001600160a01b031660609091015292915050565b5f546001600160a01b031633146105b3576040516330cd747160e01b815260040160405180910390fd5b6001600160a01b0381166105da576040516349e27cff60e01b815260040160405180910390fd5b5f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80356001600160a01b038116811461063f575f80fd5b919050565b5f60208284031215610654575f80fd5b61065d82610629565b9392505050565b5f805f805f8060c08789031215610679575f80fd5b8635955061068960208801610629565b945060408701359350606087013592506080870135600481106106aa575f80fd5b8092505060a087013590509295509295509295565b5f602082840312156106cf575f80fd5b5035919050565b5f80604083850312156106e7575f80fd5b6106f083610629565b915060208301358015158114610704575f80fd5b809150509250929050565b634e487b7160e01b5f52602160045260245ffd5b6004811061073f57634e487b7160e01b5f52602160045260245ffd5b9052565b81516001600160a01b039081168252602080840151908301526040808401519083015260608084015160e08401929161077e90850182610723565b5067ffffffffffffffff608085015116608084015260a084015160a08401528060c08501511660c08401525092915050565b85815260a081016107c46020830187610723565b67ffffffffffffffff94909416604082015260608101929092526001600160a01b03166080909101529291505056fea264697066735822122056f7c792e06d23927dcbdfba54eac5dfac12387be9260cd1e7ba947e5d54f66d64736f6c63430008180033",
+  "deployedBytecode": "0x608060405234801561000f575f80fd5b506004361061007a575f3560e01c8063618bb07911610058578063618bb079146100fd5780638da5cb5b14610110578063f227fa231461013a578063f2fde38b1461015a575f80fd5b80630a4d85cd1461007e57806334650503146100b557806338a699a4146100ca575b5f80fd5b6100a061008c366004610644565b60016020525f908152604090205460ff1681565b60405190151581526020015b60405180910390f35b6100c86100c3366004610664565b61016d565b005b6100a06100d83660046106bf565b5f90815260026020526040902060030154610100900467ffffffffffffffff16151590565b6100c861010b3660046106d6565b6103f4565b5f54610122906001600160a01b031681565b6040516001600160a01b0390911681526020016100ac565b61014d6101483660046106bf565b6104a3565b6040516100ac9190610743565b6100c8610168366004610644565b610589565b335f9081526001602052604090205460ff1661019c57604051633664441d60e11b815260040160405180910390fd5b856101ba5760405163323f1a3560e11b815260040160405180910390fd5b6001600160a01b0385166101e1576040516301fc71f560e21b815260040160405180910390fd5b8315806101ec575082155b15610209576040516257c03760e51b815260040160405180910390fd5b5f82600381111561021c5761021c61070f565b0361023a576040516307a92f1960e51b815260040160405180910390fd5b5f86815260026020526040902060030154610100900467ffffffffffffffff161561027857604051635bebc7ad60e11b815260040160405180910390fd5b5f4290506040518060e00160405280876001600160a01b031681526020018681526020018581526020018460038111156102b4576102b461070f565b815267ffffffffffffffff83166020808301919091526040808301869052336060938401525f8b8152600280845290829020855181546001600160a01b0319166001600160a01b03909116178155928501516001808501919091559185015190830155918301516003808301805493949293909260ff199091169184908111156103405761034061070f565b0217905550608082015160038201805468ffffffffffffffff00191661010067ffffffffffffffff9093169290920291909117905560a0820151600482015560c090910151600590910180546001600160a01b0319166001600160a01b03928316179055604051859188169089907f41a87ae829b24f17c924a5e9eaebd5683b1c8c1ca6f2107051c68d1eaa4ad1cd906103e3908a90899088908a9033906107b0565b60405180910390a450505050505050565b5f546001600160a01b0316331461041e576040516330cd747160e01b815260040160405180910390fd5b6001600160a01b038216610445576040516314757fcb60e11b815260040160405180910390fd5b6001600160a01b0382165f81815260016020908152604091829020805460ff191685151590811790915591519182527fdfd87d205b27ab761c75f0d3d9fcc6f0a6c8aefb93971bf081775600091fc998910160405180910390a25050565b6040805160e0810182525f80825260208201819052918101829052606081018290526080810182905260a0810182905260c08101919091525f82815260026020818152604092839020835160e08101855281546001600160a01b031681526001820154928101929092529182015492810192909252600380820154606084019160ff909116908111156105385761053861070f565b60038111156105495761054961070f565b81526003820154610100900467ffffffffffffffff166020820152600482015460408201526005909101546001600160a01b031660609091015292915050565b5f546001600160a01b031633146105b3576040516330cd747160e01b815260040160405180910390fd5b6001600160a01b0381166105da576040516349e27cff60e01b815260040160405180910390fd5b5f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80356001600160a01b038116811461063f575f80fd5b919050565b5f60208284031215610654575f80fd5b61065d82610629565b9392505050565b5f805f805f8060c08789031215610679575f80fd5b8635955061068960208801610629565b945060408701359350606087013592506080870135600481106106aa575f80fd5b8092505060a087013590509295509295509295565b5f602082840312156106cf575f80fd5b5035919050565b5f80604083850312156106e7575f80fd5b6106f083610629565b915060208301358015158114610704575f80fd5b809150509250929050565b634e487b7160e01b5f52602160045260245ffd5b6004811061073f57634e487b7160e01b5f52602160045260245ffd5b9052565b81516001600160a01b039081168252602080840151908301526040808401519083015260608084015160e08401929161077e90850182610723565b5067ffffffffffffffff608085015116608084015260a084015160a08401528060c08501511660c08401525092915050565b85815260a081016107c46020830187610723565b67ffffffffffffffff94909416604082015260608101929092526001600160a01b03166080909101529291505056fea264697066735822122056f7c792e06d23927dcbdfba54eac5dfac12387be9260cd1e7ba947e5d54f66d64736f6c63430008180033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.24+commit.e11b9ed9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidHash\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidProtocol\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidPublisher\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidSimulationId\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidStatus\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotPublisher\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PassportAlreadyExists\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"simulationId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"protocol\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"reportHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"sourceHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"enum SimulationPassport.Status\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"timestamp\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"toolVersion\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"publisher\",\"type\":\"address\"}],\"name\":\"PassportPublished\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"publisher\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"authorized\",\"type\":\"bool\"}],\"name\":\"PublisherUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"simulationId\",\"type\":\"bytes32\"}],\"name\":\"exists\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"simulationId\",\"type\":\"bytes32\"}],\"name\":\"getPassport\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"protocol\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"sourceHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"reportHash\",\"type\":\"bytes32\"},{\"internalType\":\"enum SimulationPassport.Status\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint64\",\"name\":\"timestamp\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"toolVersion\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"publisher\",\"type\":\"address\"}],\"internalType\":\"struct SimulationPassport.Passport\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"simulationId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"protocol\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"sourceHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"reportHash\",\"type\":\"bytes32\"},{\"internalType\":\"enum SimulationPassport.Status\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"toolVersion\",\"type\":\"bytes32\"}],\"name\":\"publish\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"publishers\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"publisher\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"authorized\",\"type\":\"bool\"}],\"name\":\"setPublisher\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"A Passport proves a report existed at a given time. It is not a universal safety claim.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Crash Lab Simulation Passport\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Anchors a minimal cryptographic record for an off-chain simulation report.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"SimulationPassport.sol\":\"SimulationPassport\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"SimulationPassport.sol\":{\"keccak256\":\"0x3abdf05862cee583439068d7d4a45626775e88fe3d1068ea6cf273eacf6d5545\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://870797d465183f278c3669ac6062d11d345efafd8ed70b785d304472f869b13a\",\"dweb:/ipfs/QmSEwzU2eJ8PtvzYSzYnKQ4T3V2hseXMyem3fp5Jks4XTv\"]}},\"version\":1}",
+  "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  }
+}

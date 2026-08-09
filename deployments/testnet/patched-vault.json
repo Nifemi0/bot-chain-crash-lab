@@ -1,0 +1,12 @@
+{
+  "product": "Crash Lab",
+  "contract": "PatchedVault",
+  "network": "BOT Chain Testnet",
+  "chainId": 968,
+  "contractAddress": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B",
+  "assetAddress": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+  "transactionHash": "0x139ac3044ebb212fe6c6ec2c94aafa3a3c3854030f8c3cc4aef8a2a6a8e8c9c9",
+  "blockNumber": 19273533,
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "explorerUrl": "https://scan.bohr.life/address/0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+}
