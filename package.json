@@ -6,7 +6,7 @@
   "description": "A reproducible adversarial smart-contract simulation and Passport proof demo for BOT Chain.",
   "license": "MIT",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "next dev",

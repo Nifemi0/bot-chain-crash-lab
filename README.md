@@ -2,6 +2,8 @@
 
 Crash Lab is a narrow, reproducible smart-contract security workflow built for BOT Chain. It demonstrates one ERC-4626 donation-inflation failure from end to end:
 
+**Live application:** [bot-chain-crash-lab.vercel.app](https://bot-chain-crash-lab.vercel.app)
+
 1. verify deployed runtime bytecode on BOT Chain testnet;
 2. execute the first-depositor donation attack;
 3. capture the zero-share victim deposit;
