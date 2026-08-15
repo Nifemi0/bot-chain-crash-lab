@@ -76,6 +76,20 @@ function buildEvidenceFallback(simulation: Simulation, evidence: Map<string, AiE
   };
 }
 
+function logProviderFailure(stage: "agent" | "report", error: unknown) {
+  const providerError = error as {
+    name?: string;
+    message?: string;
+    statusCode?: number;
+  };
+  console.error("DeepSeek investigation stage failed", {
+    stage,
+    name: providerError?.name ?? "UnknownError",
+    message: providerError?.message ?? "Unknown provider error",
+    statusCode: providerError?.statusCode ?? null,
+  });
+}
+
 async function generateEvidenceReport(model: ReturnType<typeof getInvestigationModel>["model"], simulation: Simulation, evidence: Map<string, AiEvidence>, modelId: string): Promise<AiInvestigation> {
   const response = await generateText({
     model,
@@ -235,7 +249,8 @@ Rules:
     result = await agent.generate({
       prompt: `Investigate ${simulation.contractAddress}. The deterministic baseline is E-BASELINE. Select the read-only probes needed to produce an evidence-backed review report.`,
     });
-  } catch {
+  } catch (error) {
+    logProviderFailure("agent", error);
     // Keep the product usable when the external model is unavailable or times out.
     // Collect the same live, read-only evidence directly and label the result honestly.
     const bytecode = await getVerifiedBytecode(simulation.contractAddress);
@@ -267,7 +282,8 @@ Rules:
     });
     try {
       return await generateEvidenceReport(model, simulation, evidence, modelId);
-    } catch {
+    } catch (reportError) {
+      logProviderFailure("report", reportError);
       return buildEvidenceFallback(simulation, evidence, modelId);
     }
   }
@@ -275,7 +291,8 @@ Rules:
   if (!output) {
     try {
       return await generateEvidenceReport(model, simulation, evidence, modelId);
-    } catch {
+    } catch (reportError) {
+      logProviderFailure("report", reportError);
       return buildEvidenceFallback(simulation, evidence, modelId);
     }
   }
