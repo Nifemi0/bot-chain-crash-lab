@@ -1,0 +1,3 @@
+import React from "react";
+import {Card, SceneShell} from "../shared";
+export const IntroScene = () => <SceneShell index="01" kicker="The mission" title="Inspect the protocol before mainnet." body="Crash Lab turns any deployed BOT Chain address into a live, read-only evidence report—without asking for a wallet signature or touching user funds." dark><div style={{display:"flex",gap:28}}><Card label="Network" value="BOT Chain" detail="Mainnet · Chain 677"/><Card label="Mode" value="Read only" detail="No transaction submitted"/><Card label="Output" value="Evidence" detail="Not a safety badge"/></div></SceneShell>;

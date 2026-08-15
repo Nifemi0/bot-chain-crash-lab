@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A reproducible adversarial smart-contract simulation and Passport proof demo for BOT Chain.",
+  "description": "A live read-only BOT Chain contract analyzer with evidence-grounded AI investigation.",
   "license": "MIT",
   "engines": {
     "node": "22.x"
@@ -18,17 +18,32 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "video:render": "remotion render video/index.tsx CrashLabDemo video/crash-lab-submission-final.mp4 --codec=h264 --audio-codec=aac --crf=18",
     "contracts:compile": "node scripts/contracts/compile.mjs",
     "contracts:deploy:patched": "node scripts/contracts/deploy-patched-vault.mjs",
     "contracts:publisher": "node scripts/contracts/setup-publisher.mjs",
     "contracts:demo": "node scripts/contracts/run-demo.mjs",
-    "contracts:verify": "node scripts/contracts/verify-deployments.mjs"
+    "contracts:verify": "node scripts/contracts/verify-deployments.mjs",
+    "contracts:mainnet:deploy": "node scripts/contracts/deploy-mainnet.mjs",
+    "contracts:mainnet:demo": "node scripts/contracts/run-mainnet-demo.mjs",
+    "contracts:mainnet:verify": "node scripts/contracts/verify-mainnet.mjs",
+    "db:migrate": "node --env-file=.env.local scripts/db/migrate.mjs"
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.28",
+    "@neondatabase/serverless": "^1.1.0",
+    "@remotion/bundler": "^4.0.508",
+    "@remotion/cli": "^4.0.508",
+    "@remotion/media": "4.0.508",
+    "@remotion/renderer": "^4.0.508",
+    "@remotion/transitions": "4.0.508",
+    "ai": "^7.0.58",
     "ethers": "6.17.0",
     "next": "16.3.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "remotion": "^4.0.508",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

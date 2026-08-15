@@ -4,7 +4,7 @@ Source of truth: approved Superdesign draft `b5eb1190-fe7a-46a5-9aa0-977c402fd00
 
 ## Product context
 
-Crash Lab is a BOT Chain testnet security demonstration. It verifies deployed bytecode, replays a real ERC-4626 donation-inflation failure, verifies a virtual-liquidity repair under the same scenario, and anchors a compact report proof to the Simulation Passport contract. The product must clearly distinguish controlled testnet evidence from a general safety certification.
+Crash Lab is a live, read-only BOT Chain testnet contract analyzer. It retrieves deployed runtime bytecode, probes standard interfaces, checks proxy storage, and surfaces opcode-level review targets. It never submits transactions or presents simulated exploits as findings.
 
 ## Visual direction
 
@@ -28,10 +28,10 @@ Crash Lab is a BOT Chain testnet security demonstration. It verifies deployed by
 
 1. Fixed compact navigation layered over the hero: yellow dash, `BOT / CRASH LAB`, three monospaced section links, yellow simulation CTA, and an accessible mobile menu.
 2. Hero: `BREAK YOUR / PROTOCOL BEFORE / MAINNET DOES.` with a short adversarial-sandbox explanation, two CTAs, and a right-side impact rig viewport with a specimen readout and angled yellow activity tape.
-3. Full-bleed yellow capability rail: real transactions, autonomous agents, invariant monitoring, same-attack replay.
-4. Black failure ledger: oversized canonical-run heading, compromise badge, and three continuous rows for attack, invariant fracture, and verification replay using real evidence.
-5. Physical dossier simulation form: square elevated-paper panel with calibration tab, address input, and yellow pill button. The live event console and finding report expand beneath it without changing the visual language.
-6. Passport evidence area and structured footer with real explorer, API, repository, RPC, and contract links.
+3. Full-bleed yellow capability rail: live bytecode retrieval, interface classification, proxy detection, and opcode surface checks.
+4. Black methodology ledger: runtime retrieval, read-only interface probes, and evidence-only reporting.
+5. Physical dossier analysis form: square elevated-paper panel with a live-RPC tab, address input, and yellow pill button. The analysis console and report expand beneath it without changing the visual language.
+6. Structured footer with only functional analyzer anchors and verified external explorer, API, repository, and contract links.
 
 ## Responsive and motion
 
@@ -43,5 +43,5 @@ Crash Lab is a BOT Chain testnet security demonstration. It verifies deployed by
 ## Accuracy constraints
 
 - Always show BOT Chain testnet chain ID `968`, RPC `https://rpc.bohr.life`, and BOTScan `https://scan.bohr.life`.
-- Use the repository’s real contract addresses, transaction hashes, victim-share values, and Passport proof.
-- Never reproduce the draft’s placeholder chain `677`, fabricated treasury values, or fictional transaction values.
+- Use the repository’s real contract addresses and live RPC observations.
+- Never display simulated attacks, replay results, victim-share values, fabricated transactions, or automatic vulnerability claims.

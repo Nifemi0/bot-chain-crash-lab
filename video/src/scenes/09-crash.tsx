@@ -1,0 +1,3 @@
+import React from "react";
+import {Card, SceneShell} from "../shared";
+export const CrashScene = () => <SceneShell index="08" kicker="Canonical crash scenario" title="Donation-driven share inflation." body="A first depositor can inflate an ERC-4626 vault's share price so the next non-zero deposit rounds down to zero shares."><div style={{display:"flex",gap:34,alignItems:"center"}}><Card label="Before patch" value="0 shares" detail="Invariant violated" accent="#ff735c"/><div style={{fontSize:58,fontWeight:950}}>→</div><Card label="Patched replay" value="> 0 shares" detail="Invariant restored" accent="#70e29a"/></div><div style={{fontSize:26,fontWeight:900,marginTop:34}}>INVARIANT · EVERY NON-ZERO DEPOSIT MUST MINT NON-ZERO SHARES</div></SceneShell>;

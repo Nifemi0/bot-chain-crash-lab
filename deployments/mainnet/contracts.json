@@ -1,0 +1,50 @@
+{
+  "product": "Crash Lab",
+  "network": "BOT Chain Mainnet",
+  "chainId": 677,
+  "rpcUrl": "https://rpc.botchain.ai",
+  "explorerUrl": "https://scan.botchain.ai",
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "contracts": {
+    "mockBot": {
+      "contract": "MockBOT",
+      "address": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+      "transactionHash": "0x80acb4a9246dee87fe661a1a12e71096a47701ef7306d825635f3f191a1d6335",
+      "blockNumber": 19297916,
+      "gasUsed": "421560",
+      "effectiveGasPriceWei": "20000000000",
+      "explorerUrl": "https://scan.botchain.ai/address/0x48590156ceC049082695469A1749fED9DeF52eE5"
+    },
+    "vulnerableVault": {
+      "contract": "VulnerableVault",
+      "address": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+      "transactionHash": "0x7c94a7aab7642d175595b5e45c1a1987017560b8f5ee6412cc7800d6f556185a",
+      "blockNumber": 19297919,
+      "gasUsed": "394448",
+      "effectiveGasPriceWei": "20000000000",
+      "explorerUrl": "https://scan.botchain.ai/address/0x756892F17A7F8d5b870ee2910DF610fEC2E1930C"
+    },
+    "patchedVault": {
+      "contract": "PatchedVault",
+      "address": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+      "transactionHash": "0x2b1538890424c1f90291cecc75dff747c86ef1ded56ac9909033a238bbe6e14c",
+      "blockNumber": 19297923,
+      "gasUsed": "432819",
+      "effectiveGasPriceWei": "20000000000",
+      "explorerUrl": "https://scan.botchain.ai/address/0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA"
+    },
+    "passport": {
+      "contract": "SimulationPassport",
+      "address": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B",
+      "transactionHash": "0xd6bca2739338646fd2b379e06e03cc516a5de8a745d1dde768fbcfa77e88a2e8",
+      "blockNumber": 19297927,
+      "gasUsed": "554488",
+      "effectiveGasPriceWei": "20000000000",
+      "explorerUrl": "https://scan.botchain.ai/address/0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+    }
+  },
+  "createdAt": "2026-08-11T14:05:46.136Z",
+  "updatedAt": "2026-08-11T14:05:56.991Z",
+  "complete": true,
+  "remainingBalanceBot": "0.4639337"
+}

@@ -1,0 +1,3 @@
+import React from "react";
+import {EvidenceRow, SceneShell} from "../shared";
+export const PassportScene = () => <SceneShell index="09" kicker="On-chain proof" title="Two proofs. Clear boundaries." body="Wallet attestations timestamp individual AI report hashes. The Simulation Passport anchors the controlled vulnerable-and-patched replay. Neither claims that an arbitrary contract is safe." dark><div style={{display:"grid",gap:12,maxWidth:1200}}><EvidenceRow id="WALLET" label="User-approved AI report hash attestation" status="READY" delay={28}/><EvidenceRow id="PASSPORT" label="Controlled replay source and report hashes" status="ANCHORED" delay={40}/><EvidenceRow id="CHAIN" label="BOT Chain Mainnet · transaction · block" status="LIVE" delay={52}/></div></SceneShell>;

@@ -1,0 +1,3 @@
+import React from "react";
+import {EvidenceRow, SceneShell} from "../shared";
+export const EvidenceScene = () => <SceneShell index="04" kicker="Deterministic foundation" title="Evidence comes first." body="A caution is a review target—not an automatic exploit claim. A clean scan is never marketed as proof of safety." dark><div style={{display:"grid",gap:12,maxWidth:1200}}><EvidenceRow id="E-BASELINE" label="Deterministic scan baseline" delay={30}/><EvidenceRow id="E-RUNTIME" label="Live bytecode fingerprint" delay={42}/><EvidenceRow id="E-INTERFACES" label="Read-only interface profile" delay={54}/><EvidenceRow id="E-OPCODES" label="Executable opcode surface" delay={66}/></div></SceneShell>;

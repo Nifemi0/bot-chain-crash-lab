@@ -1,0 +1,3 @@
+import React from "react";
+import {Card, SceneShell} from "../shared";
+export const FallbackScene = () => <SceneShell index="06" kicker="Provider resilience" title="Bad AI output never becomes a clean bill of health." body="If the model times out or returns invalid JSON, Crash Lab clearly switches to deterministic evidence fallback and preserves the chain observations."><div style={{display:"flex",gap:30}}><Card label="AI response" value="Invalid" detail="Rejected by schema" accent="#ff735c"/><Card label="Safe response" value="Fallback" detail="Evidence preserved" accent="#70e29a"/><Card label="Next step" value="Review" detail="Human analysis required"/></div></SceneShell>;

@@ -5,9 +5,9 @@ import {
   solidityPacked,
   toUtf8Bytes,
 } from "ethers";
-import { canonicalRun, hasCanonicalRun } from "@/lib/canonical";
+import { analyzeRuntimeBytecode } from "@/lib/analysis";
 import { BOT_CHAIN, CONTRACTS } from "@/lib/network";
-import type { Simulation, SimulationEvent, SimulationFinding } from "@/lib/types";
+import type { ContractAnalysis, Simulation, SimulationEvent, SimulationFinding } from "@/lib/types";
 
 export const TOOL_VERSION = keccak256(toUtf8Bytes("crash-lab/1.0.0"));
 
@@ -22,49 +22,33 @@ export function isDemoContract(address: string) {
   return getAddress(address) === CONTRACTS.vulnerableVault;
 }
 
-function findingFor(address: string): SimulationFinding {
-  if (!isDemoContract(address)) {
-    return {
-      id: "CL-000",
-      title: "Contract accepted for bytecode verification",
-      severity: "informational",
-      status: "unresolved",
-      invariant: "No automated claim for contracts outside the canonical demo target",
-      summary:
-        "Crash Lab intentionally limits this public MVP to one reproducible vault scenario.",
-      exploit: "No exploit was attempted against the submitted live contract.",
-      repair: "Run the canonical vault to inspect the complete attack-and-replay proof.",
-      beforeVictimShares: "n/a",
-      afterVictimShares: "n/a",
-    };
-  }
-
+function findingFor(address: string, analysis?: ContractAnalysis): SimulationFinding {
   return {
-    id: "CL-4626-001",
-    title: "Donation-driven share inflation",
-    severity: "critical",
-    status: "vulnerable",
-    invariant: "Every non-zero deposit must mint non-zero shares",
+    id: "CL-SURFACE-001",
+    title: `${analysis?.label ?? "Contract"} surface analysis`,
+    severity: "informational",
+    status: "analyzed",
+    invariant: "Deployed runtime must be inspectable without overstating security conclusions",
     summary:
-      "A first depositor donates assets directly to the vault, inflates the share price, and rounds the victim deposit to zero shares.",
-    exploit:
-      "The vulnerable vault calculates shares from its raw token balance and permits a zero-share deposit.",
-    repair:
-      "The patched vault introduces virtual assets and shares and rejects zero-share deposits. Exact replay mints shares for the victim.",
-    beforeVictimShares: canonicalRun.attack.victimShares,
-    afterVictimShares: canonicalRun.replay.victimShares,
+      `Live read-only analysis completed for ${analysis?.label?.toLowerCase() ?? "this contract"}. Review each surfaced capability and caution with the source code and protocol design.`,
+    exploit: "No state-changing transaction or simulated exploit was executed.",
+    repair: "Cautions are review targets, not automatic vulnerability claims.",
+    beforeVictimShares: "n/a",
+    afterVictimShares: "n/a",
   };
 }
 
 export function createSimulation(input: {
   address: string;
   bytecode: string;
+  analysis?: ContractAnalysis;
   now?: Date;
   nonce?: string;
 }): Simulation {
   const address = parseContractAddress(input.address);
   const now = input.now ?? new Date();
   const nonce = input.nonce ?? crypto.randomUUID();
+  const analysis = input.analysis ?? analyzeRuntimeBytecode(input.bytecode);
   const codeHash = keccak256(input.bytecode as `0x${string}`);
   const simulationId = keccak256(
     solidityPacked(
@@ -78,8 +62,8 @@ export function createSimulation(input: {
         simulationId,
         address,
         codeHash,
-        finding: findingFor(address),
-        canonicalPassport: canonicalRun.passport.transactionHash,
+        finding: findingFor(address, analysis),
+        evidenceSource: "BOT Chain live runtime bytecode and read-only RPC probes",
       }),
     ),
   );
@@ -91,65 +75,62 @@ export function createSimulation(input: {
     network: BOT_CHAIN.name,
     codeHash,
     reportHash,
-    status: isDemoContract(address) ? "vulnerable" : "unresolved",
-    agentCount: isDemoContract(address) ? 32 : 1,
-    finding: findingFor(address),
-    passport: canonicalRun.passport,
-    eventsUrl: `/api/simulations/${simulationId}/events?address=${address}`,
+    status: "analyzed",
+    mode: "universal-scan",
+    agentCount: 1,
+    analysis,
+    finding: findingFor(address, analysis),
+    passport: {
+      contractAddress: CONTRACTS.passport,
+      simulationId: null,
+      reportHash: null,
+      sourceHash: null,
+      transactionHash: null,
+      blockNumber: null,
+      publisher: null,
+    },
+    eventsUrl: `/api/simulations/${simulationId}/events?${new URLSearchParams({
+      address,
+      profile: analysis.label,
+      bytes: String(analysis.runtimeBytes),
+      checks: String(analysis.checks.length),
+      cautions: String(analysis.checks.filter((check) => check.outcome === "caution").length),
+    })}`,
     createdAt: now.toISOString(),
   };
 }
 
-export function createSimulationEvents(address: string): SimulationEvent[] {
-  const demo = isDemoContract(address);
-  if (!demo) {
-    return [
-      { sequence: 1, type: "simulation.created", message: "Simulation envelope created." },
-      { sequence: 2, type: "contract.verified", message: "BOT Chain bytecode confirmed." },
-      {
-        sequence: 3,
-        type: "simulation.completed",
-        message: "Analysis stopped safely: this MVP only replays the canonical demo vault.",
-      },
-    ];
-  }
-
-  const passportReady = hasCanonicalRun();
+export function createSimulationEvents(
+  address: string,
+  analysis?: ContractAnalysis,
+  summary?: { label: string; runtimeBytes: number; checkCount: number; cautionCount: number },
+): SimulationEvent[] {
+  const profile = analysis ?? analyzeRuntimeBytecode("0x");
+  const label = summary?.label ?? profile.label;
+  const runtimeBytes = summary?.runtimeBytes ?? profile.runtimeBytes;
+  const checkCount = summary?.checkCount ?? profile.checks.length;
+  const cautions = summary?.cautionCount ?? profile.checks.filter((check) => check.outcome === "caution").length;
   return [
-    { sequence: 1, type: "simulation.created", message: "Isolated replay envelope created." },
-    { sequence: 2, type: "contract.verified", message: "Deployed bytecode matched the canonical vulnerable vault." },
-    { sequence: 3, type: "agent.dispatched", message: "32 deterministic agent-wallet strategies dispatched." },
+    { sequence: 1, type: "simulation.created", message: "Read-only analysis record created." },
+    { sequence: 2, type: "contract.verified", message: `${runtimeBytes.toLocaleString()} runtime bytes retrieved from BOT Chain.` },
+    {
+      sequence: 3,
+      type: "contract.classified",
+      message: `${label} classified from live interface probes and deployed bytecode.`,
+    },
     {
       sequence: 4,
-      type: "invariant.failed",
-      message: "Asset/share consistency failed: victim received zero shares.",
-      txHash: canonicalRun.attack.transactionHashes.at(-1),
+      type: "surface.scanned",
+      message: `${checkCount} bytecode checks completed; ${cautions} caution${cautions === 1 ? "" : "s"} require human review.`,
     },
-    { sequence: 5, type: "patch.compiled", message: "Virtual-share repair compiled and deployed." },
     {
-      sequence: 6,
-      type: "replay.completed",
-      message: "Exact replay passed: victim received non-zero shares.",
-      txHash: canonicalRun.replay.transactionHashes.at(-1),
-    },
-    ...(passportReady
-      ? [
-          {
-            sequence: 7,
-            type: "passport.anchored" as const,
-            message: "Canonical report hash confirmed on BOT Chain Passport.",
-            txHash: canonicalRun.passport.transactionHash ?? undefined,
-          },
-        ]
-      : []),
-    {
-      sequence: passportReady ? 8 : 7,
+      sequence: 5,
       type: "simulation.completed",
-      message: "Evidence package ready for inspection.",
+      message: "Live analysis complete. No transaction or simulated exploit was executed.",
     },
   ];
 }
 
-export function canonicalFinding(address: string) {
-  return findingFor(parseContractAddress(address));
+export function canonicalFinding(address: string, analysis?: ContractAnalysis) {
+  return findingFor(parseContractAddress(address), analysis);
 }

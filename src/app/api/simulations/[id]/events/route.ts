@@ -7,11 +7,22 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const addressValue = new URL(request.url).searchParams.get("address");
+  const searchParams = new URL(request.url).searchParams;
+  const addressValue = searchParams.get("address");
 
   try {
     const address = parseContractAddress(addressValue);
-    const events = createSimulationEvents(address);
+    const profile = searchParams.get("profile")?.slice(0, 80) || "Custom smart contract";
+    const numberParam = (name: string, maximum: number) => {
+      const value = Number.parseInt(searchParams.get(name) ?? "0", 10);
+      return Number.isFinite(value) ? Math.min(Math.max(value, 0), maximum) : 0;
+    };
+    const events = createSimulationEvents(address, undefined, {
+      label: profile,
+      runtimeBytes: numberParam("bytes", 100_000),
+      checkCount: numberParam("checks", 100),
+      cautionCount: numberParam("cautions", 100),
+    });
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {

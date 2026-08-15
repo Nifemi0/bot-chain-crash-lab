@@ -1,14 +1,16 @@
 # Security policy
 
-Crash Lab is a controlled testnet demonstration, not a universal audit or safety certification.
+Crash Lab is an evidence-grounded BOT Chain Mainnet investigation tool, not a universal audit or safety certification.
 
 ## Safety model
 
-- Chain-changing scripts refuse networks other than BOT Chain testnet (`968`).
-- The public product never attacks arbitrary submitted contracts.
+- Mainnet deployment scripts are locked to BOT Chain chain ID `677`, require an explicit confirmation flag, and use only the purpose-built MockBOT specimen.
+- Public analysis is read-only and never calls or attacks a submitted contract.
+- Wallet attestations are optional, explicit, zero-value self-transactions. They commit only a versioned analysis ID and report hash in transaction data.
+- An attestation proves provenance and timestamp; it does not prove that the analyzed contract is safe.
 - `.secrets/`, `.env*`, and Vercel project metadata are excluded from Git.
 - The Passport owner key is never required by the application.
-- Dynamic publication is off by default and requires both a limited publisher wallet and a server-only authorization key.
+- Server-side dynamic Passport publication is off by default. The public wallet workflow does not expose or depend on a server signing key.
 
 ## Reporting
 

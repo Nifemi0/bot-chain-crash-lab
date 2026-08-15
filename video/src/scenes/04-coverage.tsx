@@ -1,0 +1,3 @@
+import React from "react";
+import {Chip, SceneShell, YELLOW} from "../shared";
+export const CoverageScene = () => <SceneShell index="03" kicker="Broad contract coverage" title="Standards recognized. Custom contracts included." body="Safe interface probes classify familiar surfaces, while unknown applications still receive the universal runtime and opcode review."><div style={{display:"flex",gap:15,flexWrap:"wrap",maxWidth:1450}}>{["ERC-20","ERC-721","ERC-1155","ERC-4626","ERC-777","ERC-2981","Ownable","AccessControl","Pausable","Permit","Flash loan","Multicall","Custom EVM"].map((item,i)=><Chip key={item} tone={i===12?"dark":i%3===0?"yellow":i%3===1?"blue":"green"}>{item}</Chip>)}</div><div style={{height:7,width:980,background:YELLOW,marginTop:42}}/></SceneShell>;
