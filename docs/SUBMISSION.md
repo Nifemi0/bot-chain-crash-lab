@@ -42,6 +42,7 @@ Crash Lab is an AI-native contract investigation workflow. It accepts any deploy
 - [x] Four deployed mainnet contracts
 - [x] Wallet connection and complete wallet attestation flow
 - [x] AI-controlled read-only tool selection
+- [ ] Add spendable DeepSeek API credit and confirm a live report returns `reportSource: deepseek` (the provider currently returns HTTP 402; Crash Lab fails safely to its labeled evidence-only fallback)
 - [x] Reproducible transaction evidence
 - [x] On-chain Passport record
 - [x] Architecture and security documentation
