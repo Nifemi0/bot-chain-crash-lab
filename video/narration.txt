@@ -1,0 +1,25 @@
+Smart contracts do not fail because their interface looks wrong. They fail because deployed behavior, permissions, and accounting assumptions break under pressure.
+
+This is BOT Chain Crash Lab: a live, read-only contract investigation workspace built for BOT Chain mainnet, chain six hundred and seventy-seven.
+
+Start with any deployed contract address. Crash Lab retrieves the runtime bytecode that is actually on-chain. It records the code hash and runtime size, extracts selector candidates, and checks the EIP nineteen sixty-seven implementation slot for common proxy deployments. Analysis needs no wallet signature, submits no transaction, and never touches user funds.
+
+Next, the analyzer runs safe interface probes. It can recognize common token, NFT, vault, royalty, ownership, access-control, pause, permit, flash-loan, and multicall surfaces. Unknown applications still receive a universal bytecode and opcode review, so a custom contract is not rejected just because it does not match a popular standard.
+
+The deterministic layer is the source of truth. Every observation is stored as evidence: the live runtime fingerprint, the interface profile, the proxy result, and the executable opcode surface. A caution means review this behavior. It does not automatically mean the contract is exploitable, and a clean result is never presented as proof of safety.
+
+Then DeepSeek V four Flash becomes the investigation controller. The agent selects complementary read-only probes, receives only the evidence collected by Crash Lab, and must cite an exact evidence identifier for every finding. Unsupported citations are removed. It cannot publish a vulnerability claim, invent source code, or describe an exploit as proven.
+
+When the report is ready, the user can connect an EVM wallet and explicitly approve a zero-value BOT Chain transaction. The transaction calls no target contract. It anchors a versioned commitment containing the private analysis identifier and the exact AI report hash, creating a public timestamp and provenance trail without exposing the report itself.
+
+If the AI provider times out or returns invalid output, the investigation does not pretend everything is fine. Crash Lab switches to a clearly labeled deterministic evidence fallback, preserving the runtime observations and telling the reviewer that manual analysis is still required.
+
+Each browser gets a private scan ledger. You can reopen previous results without exposing another visitor's contract history. The interface also explains the report limits, the model source, confidence, review level, and every evidence item used.
+
+For the canonical crash scenario, the project also demonstrates donation-driven share inflation in an ERC forty-six twenty-six vault. A first depositor can inflate the share price so a later deposit rounds down to zero shares. The patched replay restores the invariant that every non-zero deposit must mint non-zero shares.
+
+The Simulation Passport anchors that exact canonical source and report on BOT Chain. It records the simulation identifier, hashes, publisher, transaction, and block. Wallet attestations prove individual AI reports existed, while the Passport proves the controlled replay record. Neither is a blanket security badge for unrelated contracts.
+
+Crash Lab combines live chain evidence, explainable AI, wallet interaction, private scan history, and compact on-chain proof in one mobile-ready workflow.
+
+Inspect what is deployed. Understand what is observable. And before mainnet, crash it first.

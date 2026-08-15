@@ -1,0 +1,17 @@
+.git/
+.next/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+tmp/
+/Lib/
+/artifacts/
+contracts/cache/
+scripts/*.exe
+video/*.mp4
+video/*.png
+public/voiceover/*
+!public/voiceover/crash-lab-demo-v2.mp3
+*.log
+*.tsbuildinfo

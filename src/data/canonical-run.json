@@ -1,50 +1,66 @@
 {
   "network": {
-    "name": "BOT Chain Testnet",
-    "chainId": 968,
-    "rpcUrl": "https://rpc.bohr.life",
-    "explorerUrl": "https://scan.bohr.life"
+    "name": "BOT Chain Mainnet",
+    "chainId": 677,
+    "rpcUrl": "https://rpc.botchain.ai",
+    "explorerUrl": "https://scan.botchain.ai"
   },
   "contracts": {
-    "passport": "0x48590156ceC049082695469A1749fED9DeF52eE5",
-    "mockBot": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
-    "vulnerableVault": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
-    "patchedVault": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+    "mockBot": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+    "vulnerableVault": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+    "patchedVault": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+    "passport": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+  },
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "publisher": {
+    "address": "0x8aE477fB0Dfb75091FcB61422e73CDEe2c6ebF15",
+    "balanceBot": "0.03265708",
+    "transactions": [
+      {
+        "action": "authorize",
+        "hash": "0xd77307c9184a0f09ca4c8b4d9dbf28fd523e8bbe07082bdf716264a917405034",
+        "blockNumber": 19298025
+      },
+      {
+        "action": "fund",
+        "hash": "0xb54f0910c717168362bf17b863dae620a72649decc6a71d0ee55f30a94c9642f",
+        "blockNumber": 19298028
+      }
+    ]
   },
   "attack": {
     "transactionHashes": [
-      "0x76d096f4b766a951c5922b155684ac50434d1c2b9668267c8bfcb7c63c41816a",
-      "0xf9e22d1a6254677bcc4401eb398d6480fc523c4dbc62fc52f8b31bf0b738ef64",
-      "0x1dc49f0dab9d8385eba84285359cd6af87f501249e596ec318969136bb10e78d",
-      "0xa3ff2f2438960e0cd0c8b83ba000cba53f9201aec7a45bd87b5eab70da62ebac",
-      "0x16c327b8dc1667d70435b5365e6e09f88c889e7ada14891fab55e8bf804ddd68",
-      "0x2910a47ab2517279e128e61d549a26cdf02d7364796e22b5092c34c01a4140e8",
-      "0x972ad14ea18cf18172073ba974ba7d75ba0ca2b94c62da22804e401e9679a660",
-      "0x83b9bf3d114cb2136e20dbc8b5421e8dc4cef632d49e557640f9cdc1b3cc1235",
-      "0x5b757d14d916402f6ab658b8a9998b0e0700ab013e55f1865b7c410e5b00786b"
+      "0xa5c9a041a1c8d7a14fdf40542e76b6f51eb5f184cf792c6b6469075b2c9aa76b",
+      "0x02f878b8d436df4a39695d5c42509ed70e48337a62e1ee193f12804ffc3c6799",
+      "0xf4699b520f1816061541a7ce458af5fed8e1ff99f091b2502722cd83acc614aa",
+      "0xab5f1fd1a7b020fd6ac52fd2a2e7c1a63d2d72cba94c568c8dfa6623bb0281d0",
+      "0xf4bba7236442b460a0ded21faa183e68e7d0b6f5a05267c972c5690e5c576b39",
+      "0x3dd3dfe20294fddcaeb40e00f22e6888fc5c44d7d3d93d84b7805f6aa7795d9b",
+      "0xc2b47ae36f6cb0a6c696eafe86c66a3174ec4b9914ae11cbf25bed819115fa37",
+      "0xeba21a161acccc4e28580902e265777f96254da23f4aa56182bae020782227d7"
     ],
     "victimShares": "0",
     "attackerRecoveredAssets": "2.000000000000000001"
   },
   "replay": {
     "transactionHashes": [
-      "0x74afe1ed85947d0631c72055a5c18242026d9260e034a20bc5cab56b916bc139",
-      "0xb595c90c6656bade1c318dde0d8ea1372143afa893a3ec5d015fca7c0ae6b7f3",
-      "0xdc073d85c1087786fbdd091fafefd3e4b7036632e5d7781fb3a09ad6c3a73f86",
-      "0x630fc9c4ff265f0dc25fa4e4832145802a2567fb93287cd11a7fff5bc7284958",
-      "0x96941edac79991ca7bfd61836d0a9081c3fb3cdc9e76edeb2e4f6f9202d9373e"
+      "0x6827fbb7e16debbbf018ec9049753f677329e136cc589b53309d9db1cc1f6f51",
+      "0xfd3f327efa0deb81a36b2b55f84079b8b5bdc6a27f08d95282db53a4013fbc1e",
+      "0xc66fe2832de22fb800e9bf2e88f84f219964e94e5beb443f4f14da42fe86bbdc",
+      "0xe86cc7770c8cdf9bdc43b2e70d62b67da2d1a9b1927201b385dd1c26178449bb",
+      "0xdc421626d6d1e4493ec8752b2fc137b3bac7fdeeea5f20920d43b91ce4af18e1"
     ],
     "victimShares": "500000000000000000",
     "invariantHeld": true
   },
   "passport": {
-    "contractAddress": "0x48590156ceC049082695469A1749fED9DeF52eE5",
-    "simulationId": "0xed8d64bd9a22a0e516ec86010bf5ddf2e28854f0a6540ed7d5d200710bffce9e",
-    "reportHash": "0xb2f67d0ac33aa6966d02e9494a4c25a2a973dd7e5d78642033a9a7bafa685580",
-    "sourceHash": "0xc3a5f20a8a30492ecef5fea31ee146530e7abf7e996f46507e816277deae0539",
-    "transactionHash": "0x114ffdac62f9ebbab40e2f0559bb457611925aa41b16c5ce8ee85a56a40a868d",
-    "blockNumber": 19273637,
-    "publisher": "0xA74C46F67C874e2DEE09274e56C642A431776f8B"
+    "contractAddress": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B",
+    "simulationId": "0xdf4d1a5d0b96275e855a94539f43159541fdc127ea852f722a9f3f3c59aa0ad5",
+    "reportHash": "0x0107c9a4bba474d8a9bed73a422de374ad22cf99b995085a933b169fdb686897",
+    "sourceHash": "0x39756c8384dcf98e02ccd8fc22f4287ab49b61d5018a0ce6afc4bc2d725a7329",
+    "transactionHash": "0xa42a3cf549d23098a391a843547b16539ac3fb0fd3badff972f68c2998b360cc",
+    "blockNumber": 19298080,
+    "publisher": "0x8aE477fB0Dfb75091FcB61422e73CDEe2c6ebF15"
   },
-  "generatedAt": "2026-08-09T15:47:54.294Z"
+  "generatedAt": "2026-08-11T14:07:53.128Z"
 }

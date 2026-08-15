@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, IBM_Plex_Mono, Inter_Tight } from "next/font/google";
+import { BOT_CHAIN } from "@/lib/network";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -26,15 +27,15 @@ export const metadata: Metadata = {
         : "http://localhost:3000"),
   ),
   title: {
-    default: "Crash Lab — BOT Chain adversarial simulation",
+    default: "Crash Lab — BOT Chain contract analyzer",
     template: "%s | Crash Lab",
   },
   description:
-    "Reproduce a vault accounting failure, verify the repair, and inspect its on-chain BOT Chain Passport proof.",
-  keywords: ["BOT Chain", "smart contract security", "ERC-4626", "hackathon", "simulation"],
+    `Inspect live ${BOT_CHAIN.name} contracts using deployed bytecode, read-only interface probes, proxy detection, and opcode surface checks.`,
+  keywords: ["BOT Chain", "smart contract security", "bytecode analysis", "contract analyzer", "hackathon"],
   openGraph: {
     title: "Crash Lab",
-    description: "Contract → adversarial replay → verified patch → on-chain Passport.",
+    description: "Live BOT Chain bytecode and interface analysis with no simulated exploit claims.",
     type: "website",
   },
   twitter: { card: "summary_large_image", title: "Crash Lab" },

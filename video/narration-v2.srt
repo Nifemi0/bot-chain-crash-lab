@@ -1,0 +1,147 @@
+1
+00:00:00,100 --> 00:00:03,338
+Smart contracts do not fail because their interface looks wrong.
+
+2
+00:00:03,288 --> 00:00:07,730
+They fail because deployed behavior, permissions, and accounting assumptions break under pressure.
+
+3
+00:00:07,730 --> 00:00:14,548
+This is BOT Chain Crash Lab: a live, read-only contract investigation workspace built for BOT Chain mainnet, chain six hundred and seventy-seven.
+
+4
+00:00:14,548 --> 00:00:16,980
+Start with any deployed contract address.
+
+5
+00:00:16,980 --> 00:00:20,336
+Crash Lab retrieves the runtime bytecode that is actually on-chain.
+
+6
+00:00:20,336 --> 00:00:27,721
+It records the code hash and runtime size, extracts selector candidates, and checks the EIP nineteen sixty-seven implementation slot for common proxy deployments.
+
+7
+00:00:27,721 --> 00:00:32,375
+Analysis needs no wallet signature, submits no transaction, and never touches user funds.
+
+8
+00:00:32,375 --> 00:00:35,326
+Next, the analyzer runs safe interface probes.
+
+9
+00:00:35,326 --> 00:00:42,432
+It can recognize common token, NFT, vault, royalty, ownership, access-control, pause, permit, flash-loan, and multicall surfaces.
+
+10
+00:00:42,432 --> 00:00:49,557
+Unknown applications still receive a universal bytecode and opcode review, so a custom contract is not rejected just because it does not match a popular standard.
+
+11
+00:00:49,557 --> 00:00:52,182
+The deterministic layer is the source of truth.
+
+12
+00:00:52,182 --> 00:00:59,096
+Every observation is stored as evidence: the live runtime fingerprint, the interface profile, the proxy result, and the executable opcode surface.
+
+13
+00:00:59,096 --> 00:01:01,432
+A caution means review this behavior.
+
+14
+00:01:01,432 --> 00:01:07,009
+It does not automatically mean the contract is exploitable, and a clean result is never presented as proof of safety.
+
+15
+00:01:07,009 --> 00:01:10,403
+Then DeepSeek V four Flash becomes the investigation controller.
+
+16
+00:01:10,403 --> 00:01:17,653
+The agent selects complementary read-only probes, receives only the evidence collected by Crash Lab, and must cite an exact evidence identifier for every finding.
+
+17
+00:01:17,653 --> 00:01:19,951
+Unsupported citations are removed.
+
+18
+00:01:19,951 --> 00:01:24,538
+It cannot publish a vulnerability claim, invent source code, or describe an exploit as proven.
+
+19
+00:01:24,538 --> 00:01:30,115
+When the report is ready, the user can connect an EVM wallet and explicitly approve a zero-value BOT Chain transaction.
+
+20
+00:01:30,115 --> 00:01:32,644
+The transaction calls no target contract.
+
+21
+00:01:32,644 --> 00:01:40,788
+It anchors a versioned commitment containing the private analysis identifier and the exact AI report hash, creating a public timestamp and provenance trail without exposing the report itself.
+
+22
+00:01:40,788 --> 00:01:46,048
+If the AI provider times out or returns invalid output, the investigation does not pretend everything is fine.
+
+23
+00:01:46,048 --> 00:01:53,500
+Crash Lab switches to a clearly labeled deterministic evidence fallback, preserving the runtime observations and telling the reviewer that manual analysis is still required.
+
+24
+00:01:53,500 --> 00:01:55,826
+Each browser gets a private scan ledger.
+
+25
+00:01:55,826 --> 00:02:00,086
+You can reopen previous results without exposing another visitor's contract history.
+
+26
+00:02:00,086 --> 00:02:05,740
+The interface also explains the report limits, the model source, confidence, review level, and every evidence item used.
+
+27
+00:02:05,740 --> 00:02:12,125
+For the canonical crash scenario, the project also demonstrates donation-driven share inflation in an ERC forty-six twenty-six vault.
+
+28
+00:02:12,125 --> 00:02:16,471
+A first depositor can inflate the share price so a later deposit rounds down to zero shares.
+
+29
+00:02:16,471 --> 00:02:21,076
+The patched replay restores the invariant that every non-zero deposit must mint non-zero shares.
+
+30
+00:02:21,076 --> 00:02:25,307
+The Simulation Passport anchors that exact canonical source and report on BOT Chain.
+
+31
+00:02:25,307 --> 00:02:29,826
+It records the simulation identifier, hashes, publisher, transaction, and block.
+
+32
+00:02:29,826 --> 00:02:35,134
+Wallet attestations prove individual AI reports existed, while the Passport proves the controlled replay record.
+
+33
+00:02:35,134 --> 00:02:38,500
+Neither is a blanket security badge for unrelated contracts.
+
+34
+00:02:38,500 --> 00:02:45,625
+Crash Lab combines live chain evidence, explainable AI, wallet interaction, private scan history, and compact on-chain proof in one mobile-ready workflow.
+
+35
+00:02:45,625 --> 00:02:47,451
+Inspect what is deployed.
+
+36
+00:02:47,451 --> 00:02:49,576
+Understand what is observable.
+
+37
+00:02:49,576 --> 00:02:51,894
+And before mainnet, crash it first.

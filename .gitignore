@@ -8,6 +8,7 @@ coverage/
 node_modules/
 playwright-report/
 test-results/
+tmp/
 .superdesign/init/
 .superdesign/tmp/
 .superdesign/reference-draft.html
@@ -16,3 +17,15 @@ test-results/
 
 # Generated contract compiler cache
 contracts/cache/
+
+# Local helper runtimes and generated render intermediates
+/Lib/
+/artifacts/
+scripts/*.exe
+video/*.mp4
+video/*.png
+public/voiceover/*
+!public/voiceover/crash-lab-demo-v2.mp3
+
+.vercel
+.env*
