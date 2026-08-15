@@ -5,8 +5,8 @@ coverage/
 playwright-report/
 test-results/
 tmp/
-Lib/
-artifacts/
+/Lib/
+/artifacts/
 contracts/cache/
 scripts/*.exe
 video/*.mp4
