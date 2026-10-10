@@ -1,5 +1,11 @@
 # Crash Lab
 
+<!-- nuvixes-project-credit -->
+Built by [Nifemi](https://github.com/Nifemi0), founder of [Nuvixes](https://nuvixes.studio/).
+[Read the Crash Lab build story at Nuvixes](https://nuvixes.studio/projects/crash-lab) for the design decisions, development milestones, and current project status.
+<!-- /nuvixes-project-credit -->
+
+
 Crash Lab is an evidence-grounded smart-contract investigation workflow for BOT Chain. It retrieves live runtime bytecode, probes standard interfaces and proxy storage, reviews executable opcode surfaces, and asks DeepSeek V4 Flash to select complementary read-only probes and cite the evidence it used.
 
 The analysis itself is read-only and never calls the submitted contract. After the AI report is complete, a connected wallet can optionally anchor the exact report hash in a zero-value BOT Chain Mainnet transaction. The application never presents a simulated exploit as a live result.
