@@ -26,6 +26,23 @@ The intentionally vulnerable specimen uses only MockBOT, not a real asset. The c
 
 The original testnet deployment and receipts remain under [`deployments/testnet`](deployments/testnet); the mainnet receipts are under [`deployments/mainnet`](deployments/mainnet).
 
+## Robinhood Chain integration
+
+The four Crash Lab contracts were deployed to Robinhood Chain Mainnet (chain
+`4663`) from the existing Crash Lab deployer. The full deployment receipts are
+in `deployments/robinhood/mainnet-contracts.json`. The same deployer used the
+same nonce sequence, so the contract addresses happen to match those on BOT
+Chain. Chain ID distinguishes the deployments.
+
+Use the network selector in the site header (or mobile menu) to choose BOT
+Chain or Robinhood Chain. Scans, AI evidence probes, wallet switching, and
+explorer links follow the selected chain. The defaults use Robinhood's public
+RPC, which may be rate limited.
+
+The BOT Chain canonical exploit replay is displayed only when BOT Chain is
+selected. Robinhood's Passport contract is deployed, but no Robinhood replay
+has been published yet.
+
 ## Run locally
 
 Requirements: Node.js 22+ and npm.
@@ -40,12 +57,12 @@ Open `http://localhost:3000`. The checked-in example configuration targets BOT C
 
 ## Wallet and AI workflow
 
-1. Connect an injected EVM wallet and switch to BOT Chain Mainnet.
+1. Connect an injected EVM wallet and switch to the configured network.
 2. Analyze any deployed contract using live, read-only RPC evidence.
 3. Let DeepSeek choose complementary read-only tools and produce an evidence-cited report.
 4. Review the report and explicitly approve a zero-value self-transaction.
 5. The transaction data contains `CRASHLAB_AI_V1`, the private analysis ID, and the AI report hash.
-6. Open the BOTScan transaction as public proof that this exact report existed.
+6. Open the configured explorer transaction as public proof that this exact report existed.
 
 Only hashes are placed on-chain. A wallet attestation proves provenance and timestamp; it is not a security certification.
 

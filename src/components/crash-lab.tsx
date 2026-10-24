@@ -21,6 +21,8 @@ type Props = {
     patchedVault: string;
     passport: string;
   };
+  networks: Props["network"][];
+  networkContracts: Props["contracts"][];
   canonicalRun: CanonicalRun;
   canonicalRunReady: boolean;
 };
@@ -34,7 +36,10 @@ function injectedWallet() {
   return (window as Window & { ethereum?: Eip1193Provider }).ethereum;
 }
 
-export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }: Props) {
+export function CrashLab({ network: initialNetwork, contracts: initialContracts, networks, networkContracts, canonicalRun, canonicalRunReady }: Props) {
+  const [network, setNetwork] = useState<Props["network"]>(initialNetwork);
+  const [contracts, setContracts] = useState<Props["contracts"]>(initialContracts);
+  const canonicalMatchesNetwork = canonicalRun.network.chainId === network.chainId;
   const [address, setAddress] = useState(contracts.vulnerableVault);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [history, setHistory] = useState<Simulation[]>([]);
@@ -44,12 +49,12 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
   const [aiState, setAiState] = useState<"idle" | "running" | "complete" | "error">("idle");
   const [aiMessage, setAiMessage] = useState("The agent will choose read-only probes and cite every observation.");
   const [state, setState] = useState<"idle" | "creating" | "streaming" | "complete" | "error">("idle");
-  const [message, setMessage] = useState("Reference contract loaded. Analysis uses live BOT Chain data only.");
+  const [message, setMessage] = useState(`Reference contract loaded. Analysis uses live ${network.name} data only.`);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [walletState, setWalletState] = useState<WalletState>("idle");
-  const [walletMessage, setWalletMessage] = useState("Connect a wallet to anchor an AI report hash on BOT Chain Mainnet.");
+  const [walletMessage, setWalletMessage] = useState(`Connect a wallet to anchor an AI report hash on ${network.name}.`);
   const [attestationHash, setAttestationHash] = useState<string | null>(null);
   const [attestationReportHash, setAttestationReportHash] = useState<string | null>(null);
   const streamRef = useRef<EventSource | null>(null);
@@ -99,7 +104,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
       const response = await fetch("/api/simulations", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ contractAddress: address }),
+        body: JSON.stringify({ contractAddress: address, chainId: network.chainId }),
       });
       const result = (await response.json()) as Simulation & { error?: string };
       if (!response.ok) throw new Error(result.error ?? "Analysis could not be created.");
@@ -139,7 +144,28 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
 
   const closeMenu = () => setMenuOpen(false);
 
+  function selectChain(chainId: number) {
+    const index = networks.findIndex((item) => item.chainId === chainId);
+    if (index < 0 || network.chainId === chainId) return;
+    streamRef.current?.close();
+    setNetwork(networks[index]);
+    setContracts(networkContracts[index]);
+    setAddress(networkContracts[index].vulnerableVault);
+    setSimulation(null);
+    setEvents([]);
+    setAiInvestigation(null);
+    setAiState("idle");
+    setState("idle");
+    setWalletAddress(null);
+    setWalletState("idle");
+    setAttestationHash(null);
+    setAttestationReportHash(null);
+    setMessage(`Reference contract loaded. Analysis uses live ${networks[index].name} data.`);
+    setMenuOpen(false);
+  }
+
   function openSavedSimulation(saved: Simulation) {
+    selectChain(saved.chainId);
     streamRef.current?.close();
     setAddress(saved.contractAddress);
     setSimulation(saved);
@@ -153,7 +179,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
   async function runAiInvestigation() {
     if (!simulation) return;
     setAiState("running");
-    setAiMessage("DeepSeek V4 Flash is selecting and running read-only BOT Chain probes…");
+    setAiMessage(`DeepSeek V4 Flash is selecting and running read-only ${network.name} probes…`);
     try {
       const response = await fetch("/api/ai/investigations", {
         method: "POST",
@@ -247,12 +273,12 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
       const attestation = createAttestationData(simulation, aiInvestigation);
       const transaction = await signer.sendTransaction({ to: account, value: 0n, data: attestation.data });
       setWalletState("confirming");
-      setWalletMessage(`${shorten(transaction.hash, 10)} submitted. Waiting for BOT Chain confirmation…`);
+      setWalletMessage(`${shorten(transaction.hash, 10)} submitted. Waiting for ${network.name} confirmation…`);
       await transaction.wait(1);
       setAttestationHash(transaction.hash);
       setAttestationReportHash(attestation.aiReportHash);
       setWalletState("confirmed");
-      setWalletMessage("AI report hash anchored on BOT Chain Mainnet. The transaction is public proof of this exact report.");
+      setWalletMessage(`AI report hash anchored on ${network.name}. The transaction is public proof of this exact report.`);
     } catch (error) {
       setWalletState("error");
       setWalletMessage(error instanceof Error ? error.message : "The attestation transaction failed.");
@@ -278,6 +304,12 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
           </nav>
 
           <div className="nav-actions">
+            <label className="chain-picker">
+              <span className="sr-only">Choose network</span>
+              <select aria-label="Choose network" value={network.chainId} onChange={(event) => selectChain(Number(event.target.value))}>
+                {networks.map((item) => <option key={item.chainId} value={item.chainId}>{item.name}</option>)}
+              </select>
+            </label>
             <button
               className="mobile-nav-toggle"
               type="button"
@@ -298,6 +330,12 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
         </div>
 
         <nav id="mobile-nav-panel" className={`mobile-nav${menuOpen ? " is-open" : ""}`} aria-label="Mobile navigation">
+          <label className="mobile-nav__chain">
+            <span>Network</span>
+            <select aria-label="Choose network on mobile" value={network.chainId} onChange={(event) => selectChain(Number(event.target.value))}>
+              {networks.map((item) => <option key={item.chainId} value={item.chainId}>{item.name}</option>)}
+            </select>
+          </label>
           <a href="#how-it-works" onClick={closeMenu}>How it works</a>
           <a href="#simulator" onClick={closeMenu}>Method</a>
           <a href="#start-simulation" onClick={closeMenu}>Analyzer</a>
@@ -317,7 +355,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
           <div className="hero__inner section-shell">
             <div className="hero__copy">
               <p className="hero__meta">
-                <span>BOT CHAIN · CHAIN {network.chainId}</span>
+                <span>{network.name.toUpperCase()} · CHAIN {network.chainId}</span>
                 <span><i /> LIVE {network.name.toUpperCase()} EVIDENCE</span>
               </p>
               <h1>
@@ -326,7 +364,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                 <span>Mainnet.</span>
               </h1>
               <p className="hero__lede">
-                Analyze any deployed BOT Chain contract using its live runtime bytecode, read-only interface
+                Analyze any deployed {network.name} contract using its live runtime bytecode, read-only interface
                 probes, proxy storage, and risk-surface checks. No simulated exploit results.
               </p>
               <div className="hero__actions">
@@ -381,7 +419,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                 <div className="ledger-row__phase">01 / Runtime</div>
                 <div>
                   <h3>Deployed bytecode</h3>
-                  <p>The analyzer retrieves the exact runtime code currently stored at the submitted BOT Chain address.</p>
+                  <p>The analyzer retrieves the exact runtime code currently stored at the submitted {network.name} address.</p>
                 </div>
                 <div className="ledger-row__value ledger-row__value--yellow">
                   ETH_GETCODE · LIVE RPC
@@ -437,7 +475,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                     data-testid="contract-address"
                     value={address}
                     onChange={(event) => setAddress(event.target.value)}
-                    placeholder="ENTER BOT CHAIN ADDRESS (0x...)"
+                    placeholder={`ENTER ${network.name.toUpperCase()} ADDRESS (0x...)`}
                     spellCheck={false}
                     autoComplete="off"
                     aria-describedby="simulation-status"
@@ -461,7 +499,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                   <p className="eyebrow">Private session ledger</p>
                   <h3 id="scan-history-title">Saved scans</h3>
                 </div>
-                <span>{history.length.toString().padStart(2, "0")} runs</span>
+                <span>{history.filter((saved) => saved.chainId === network.chainId).length.toString().padStart(2, "0")} runs</span>
               </div>
 
               {historyState === "loading" && <p className="scan-history__empty">Loading saved evidence…</p>}
@@ -471,7 +509,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
               )}
               {history.length > 0 && (
                 <div className="scan-history__list">
-                  {history.map((saved, index) => (
+                  {history.filter((saved) => saved.chainId === network.chainId).map((saved, index) => (
                     <button
                       type="button"
                       className="scan-history__row"
@@ -554,7 +592,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                   <span className="ai-model">DEEPSEEK V4 FLASH</span>
                 </div>
                 <p className="ai-investigation__lede">
-                  The agent can only use Crash Lab&apos;s read-only BOT Chain tools. Deterministic evidence remains the source of truth; unsupported AI claims are discarded.
+                  The agent can only use Crash Lab&apos;s read-only {network.name} tools. Deterministic evidence remains the source of truth; unsupported AI claims are discarded.
                 </p>
                 {!aiInvestigation && (
                   <button
@@ -612,7 +650,7 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
                     </div>
                     <div className="ai-attestation" data-testid="ai-attestation">
                       <div>
-                        <span>Wallet → BOT Chain</span>
+                        <span>Wallet → {network.name}</span>
                         <h4>Anchor this AI report</h4>
                         <p>
                           Commit this exact evidence envelope with a zero-value transaction from your wallet.
@@ -647,23 +685,26 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
 
             <article id="passport" className="passport-proof">
               <div className="passport-proof__intro">
-                <p className="eyebrow">BOT Chain Simulation Passport</p>
+                <p className="eyebrow">{network.name} Simulation Passport</p>
                 <h2>Controlled proof. On-chain.</h2>
                 <p>
-                  The Passport anchors the controlled donation-inflation specimen and its patched replay.
-                  It proves the evidence existed; it is not a blanket safety badge for arbitrary contracts.
+                  {canonicalMatchesNetwork
+                    ? "The Passport anchors the controlled donation-inflation specimen and its patched replay. It proves the evidence existed; it is not a blanket safety badge for arbitrary contracts."
+                    : "The Passport contract is deployed on Robinhood Chain. A network-specific replay has not been published here yet."}
                 </p>
               </div>
               <dl>
-                <div><dt>Status</dt><dd><i className={canonicalRunReady ? "proof-light proof-light--ok" : "proof-light"} />{canonicalRunReady ? "Anchored on Mainnet" : "Verification pending"}</dd></div>
-                <div><dt>Passport contract</dt><dd>{canonicalRun.passport.contractAddress}</dd></div>
-                <div><dt>Simulation ID</dt><dd>{canonicalRun.passport.simulationId}</dd></div>
-                <div><dt>Report hash</dt><dd>{canonicalRun.passport.reportHash}</dd></div>
-                <div><dt>Before / after</dt><dd>{canonicalRun.attack.victimShares} → {canonicalRun.replay.victimShares} victim shares</dd></div>
+                <div><dt>Status</dt><dd><i className={canonicalRunReady && canonicalMatchesNetwork ? "proof-light proof-light--ok" : "proof-light"} />{canonicalRunReady && canonicalMatchesNetwork ? "Replay anchored on Mainnet" : "Contract deployed; no replay published"}</dd></div>
+                {canonicalMatchesNetwork ? <>
+                  <div><dt>Passport contract</dt><dd>{canonicalRun.passport.contractAddress}</dd></div>
+                  <div><dt>Simulation ID</dt><dd>{canonicalRun.passport.simulationId}</dd></div>
+                  <div><dt>Report hash</dt><dd>{canonicalRun.passport.reportHash}</dd></div>
+                  <div><dt>Before / after</dt><dd>{canonicalRun.attack.victimShares} → {canonicalRun.replay.victimShares} victim shares</dd></div>
+                </> : <div><dt>Passport contract</dt><dd>{contracts.passport}</dd></div>}
               </dl>
               <div className="passport-proof__actions">
                 <a className="button button--dark" href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Inspect Passport ↗</a>
-                {canonicalRun.passport.transactionHash && <a className="text-link" href={`${network.explorerUrl}/tx/${canonicalRun.passport.transactionHash}`} target="_blank" rel="noreferrer">Open proof transaction ↗</a>}
+                {canonicalMatchesNetwork && canonicalRun.passport.transactionHash && <a className="text-link" href={`${network.explorerUrl}/tx/${canonicalRun.passport.transactionHash}`} target="_blank" rel="noreferrer">Open proof transaction ↗</a>}
               </div>
             </article>
           </div>
@@ -680,13 +721,13 @@ export function CrashLab({ network, contracts, canonicalRun, canonicalRunReady }
           <nav className="footer-links" aria-label="Footer navigation">
             <div><strong>Analyze</strong><a href="#start-simulation">Contract analyzer</a><a href="#simulator">How it works</a><a href="#how-it-works">Analysis checks</a></div>
             <div><strong>Resources</strong><a href="/api/health">API health</a><a href="/demo/crash-lab-demo.mp4" target="_blank" rel="noreferrer">Demo video ↗</a><a href="https://github.com/Nifemi0/bot-chain-crash-lab" target="_blank" rel="noreferrer">GitHub source ↗</a></div>
-            <div><strong>BOT Chain</strong><a href={network.explorerUrl} target="_blank" rel="noreferrer">BOTScan explorer ↗</a><a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport contract ↗</a></div>
+            <div><strong>{network.name}</strong><a href={network.explorerUrl} target="_blank" rel="noreferrer">Block explorer ↗</a><a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport contract ↗</a></div>
           </nav>
         </div>
         <div className="section-shell footer-bottom">
           <span>© 2026 CRASH LAB V1</span>
           <div className="footer-meta" aria-label="Network information">
-            <span>BOT Chain · {network.chainId}</span>
+            <span>{network.name} · {network.chainId}</span>
             <span>Read-only inspection</span>
             <span>Optional wallet attestation</span>
           </div>

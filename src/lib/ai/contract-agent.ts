@@ -3,7 +3,6 @@ import { keccak256 } from "ethers";
 import { z } from "zod";
 import { analyzeRuntimeBytecode } from "@/lib/analysis";
 import { getInvestigationModel } from "@/lib/ai/provider";
-import { BOT_CHAIN } from "@/lib/network";
 import { getBotChainProvider, getVerifiedBytecode, inspectBotChainContract } from "@/lib/rpc";
 import type { AiEvidence, AiInvestigation, Simulation } from "@/lib/types";
 
@@ -94,7 +93,7 @@ async function generateEvidenceReport(model: ReturnType<typeof getInvestigationM
   const response = await generateText({
     model,
     maxOutputTokens: 1_400,
-    prompt: `You are the defensive report writer for Crash Lab. Write an evidence-grounded report for ${simulation.contractAddress} on ${BOT_CHAIN.name} chain ${BOT_CHAIN.chainId}. Use only the JSON evidence below. Never claim a vulnerability, exploitability, malicious intent, or safety has been proven. This is live read-only evidence, not a simulation or full audit. Never assign a function or error name to a raw selector candidate unless that name is explicitly present in the evidence. Return ONLY valid JSON matching this shape: {"overview":string,"reviewLevel":"low|review|elevated|unknown","confidence":number,"findings":[{"title":string,"classification":"notice|caution|unknown","evidenceIds":[string],"observation":string,"whyItMatters":string,"nextStep":string}],"limitations":[string]}. Every finding evidenceIds value must be one of: ${[...evidence.keys()].join(", ")}.\n\nEVIDENCE:\n${JSON.stringify([...evidence.values()])}`,
+    prompt: `You are the defensive report writer for Crash Lab. Write an evidence-grounded report for ${simulation.contractAddress} on ${simulation.network} chain ${simulation.chainId}. Use only the JSON evidence below. Never claim a vulnerability, exploitability, malicious intent, or safety has been proven. This is live read-only evidence, not a simulation or full audit. Never assign a function or error name to a raw selector candidate unless that name is explicitly present in the evidence. Return ONLY valid JSON matching this shape: {"overview":string,"reviewLevel":"low|review|elevated|unknown","confidence":number,"findings":[{"title":string,"classification":"notice|caution|unknown","evidenceIds":[string],"observation":string,"whyItMatters":string,"nextStep":string}],"limitations":[string]}. Every finding evidenceIds value must be one of: ${[...evidence.keys()].join(", ")}.\n\nEVIDENCE:\n${JSON.stringify([...evidence.values()])}`,
   });
   const text = response.text.trim().replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
   const parsed = investigationOutput.parse(JSON.parse(text));
@@ -138,10 +137,10 @@ export async function runContractInvestigation(simulation: Simulation): Promise<
 
   const agent = new ToolLoopAgent({
     model,
-    instructions: `You are Crash Lab's defensive BOT Chain contract investigation agent.
+    instructions: `You are Crash Lab's defensive contract investigation agent.
 
 Rules:
-- Investigate only the contract supplied in the user prompt on ${BOT_CHAIN.name} chain ${BOT_CHAIN.chainId}.
+- Investigate only the contract supplied in the user prompt on ${simulation.network} chain ${simulation.chainId}.
 - Use at least two complementary read-only tools before producing the report.
 - Never claim that a vulnerability, exploitability, malicious intent, or safety has been proven.
 - Findings must be limited to observable capabilities, cautionary surfaces, and unknowns.
@@ -178,13 +177,13 @@ Rules:
         description: "Read the deployed runtime bytecode and return its live fingerprint and embedded PUSH4 selector candidates.",
         inputSchema: purposeSchema,
         execute: async () => {
-          const bytecode = await getVerifiedBytecode(simulation.contractAddress);
-          const blockNumber = await getBotChainProvider().getBlockNumber();
+          const bytecode = await getVerifiedBytecode(simulation.contractAddress, simulation.chainId);
+          const blockNumber = await getBotChainProvider(simulation.chainId).getBlockNumber();
           return record({
             id: "E-RUNTIME",
             source: "runtime-rpc",
             title: "Live runtime fingerprint",
-            observation: `${Math.max(0, (bytecode.length - 2) / 2).toLocaleString()} runtime bytes retrieved at BOT Chain block ${blockNumber}.`,
+            observation: `${Math.max(0, (bytecode.length - 2) / 2).toLocaleString()} runtime bytes retrieved at ${simulation.network} block ${blockNumber}.`,
             data: {
               codeHash: keccak256(bytecode as `0x${string}`),
               runtimeBytes: Math.max(0, (bytecode.length - 2) / 2),
@@ -198,7 +197,7 @@ Rules:
         description: "Run read-only standard-interface calls and inspect the EIP-1967 implementation slot.",
         inputSchema: purposeSchema,
         execute: async () => {
-          const { analysis } = await inspectBotChainContract(simulation.contractAddress);
+          const { analysis } = await inspectBotChainContract(simulation.contractAddress, undefined, simulation.chainId);
           return record({
             id: "E-INTERFACES",
             source: "interface-rpc",
@@ -217,7 +216,7 @@ Rules:
         description: "Parse executable runtime positions and identify cautionary EVM opcode surfaces without executing them.",
         inputSchema: purposeSchema,
         execute: async () => {
-          const bytecode = await getVerifiedBytecode(simulation.contractAddress);
+          const bytecode = await getVerifiedBytecode(simulation.contractAddress, simulation.chainId);
           const analysis = analyzeRuntimeBytecode(bytecode);
           const opcodeChecks = analysis.checks.filter(
             (check) => check.id.startsWith("opcode-") && check.outcome === "caution",
@@ -253,9 +252,9 @@ Rules:
     logProviderFailure("agent", error);
     // Keep the product usable when the external model is unavailable or times out.
     // Collect the same live, read-only evidence directly and label the result honestly.
-    const bytecode = await getVerifiedBytecode(simulation.contractAddress);
-    const blockNumber = await getBotChainProvider().getBlockNumber();
-    const { analysis } = await inspectBotChainContract(simulation.contractAddress);
+    const bytecode = await getVerifiedBytecode(simulation.contractAddress, simulation.chainId);
+    const blockNumber = await getBotChainProvider(simulation.chainId).getBlockNumber();
+    const { analysis } = await inspectBotChainContract(simulation.contractAddress, undefined, simulation.chainId);
     const opcodeChecks = analyzeRuntimeBytecode(bytecode).checks.filter(
       (check) => check.id.startsWith("opcode-") && check.outcome === "caution",
     );
@@ -263,7 +262,7 @@ Rules:
       id: "E-RUNTIME",
       source: "runtime-rpc",
       title: "Live runtime fingerprint",
-      observation: `${Math.max(0, (bytecode.length - 2) / 2).toLocaleString()} runtime bytes retrieved at BOT Chain block ${blockNumber}.`,
+      observation: `${Math.max(0, (bytecode.length - 2) / 2).toLocaleString()} runtime bytes retrieved at ${simulation.network} block ${blockNumber}.`,
       data: { codeHash: keccak256(bytecode as `0x${string}`), runtimeBytes: Math.max(0, (bytecode.length - 2) / 2), blockNumber },
     });
     record({

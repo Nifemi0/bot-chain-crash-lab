@@ -6,7 +6,7 @@ import {
   toUtf8Bytes,
 } from "ethers";
 import { analyzeRuntimeBytecode } from "@/lib/analysis";
-import { BOT_CHAIN, CONTRACTS } from "@/lib/network";
+import { CONTRACTS, chainFor, contractsFor } from "@/lib/network";
 import type { ContractAnalysis, Simulation, SimulationEvent, SimulationFinding } from "@/lib/types";
 
 export const TOOL_VERSION = keccak256(toUtf8Bytes("crash-lab/1.0.0"));
@@ -44,8 +44,11 @@ export function createSimulation(input: {
   analysis?: ContractAnalysis;
   now?: Date;
   nonce?: string;
+  chainId?: number;
 }): Simulation {
   const address = parseContractAddress(input.address);
+  const chain = chainFor(input.chainId ?? 677);
+  const contracts = contractsFor(chain.chainId);
   const now = input.now ?? new Date();
   const nonce = input.nonce ?? crypto.randomUUID();
   const analysis = input.analysis ?? analyzeRuntimeBytecode(input.bytecode);
@@ -63,7 +66,7 @@ export function createSimulation(input: {
         address,
         codeHash,
         finding: findingFor(address, analysis),
-        evidenceSource: "BOT Chain live runtime bytecode and read-only RPC probes",
+        evidenceSource: `${chain.name} live runtime bytecode and read-only RPC probes`,
       }),
     ),
   );
@@ -71,8 +74,8 @@ export function createSimulation(input: {
   return {
     simulationId,
     contractAddress: address,
-    chainId: BOT_CHAIN.chainId,
-    network: BOT_CHAIN.name,
+    chainId: chain.chainId,
+    network: chain.name,
     codeHash,
     reportHash,
     status: "analyzed",
@@ -81,7 +84,7 @@ export function createSimulation(input: {
     analysis,
     finding: findingFor(address, analysis),
     passport: {
-      contractAddress: CONTRACTS.passport,
+      contractAddress: contracts.passport,
       simulationId: null,
       reportHash: null,
       sourceHash: null,
@@ -91,6 +94,7 @@ export function createSimulation(input: {
     },
     eventsUrl: `/api/simulations/${simulationId}/events?${new URLSearchParams({
       address,
+      chainId: String(chain.chainId),
       profile: analysis.label,
       bytes: String(analysis.runtimeBytes),
       checks: String(analysis.checks.length),
@@ -104,7 +108,9 @@ export function createSimulationEvents(
   address: string,
   analysis?: ContractAnalysis,
   summary?: { label: string; runtimeBytes: number; checkCount: number; cautionCount: number },
+  chainId = 677,
 ): SimulationEvent[] {
+  const chain = chainFor(chainId);
   const profile = analysis ?? analyzeRuntimeBytecode("0x");
   const label = summary?.label ?? profile.label;
   const runtimeBytes = summary?.runtimeBytes ?? profile.runtimeBytes;
@@ -112,7 +118,7 @@ export function createSimulationEvents(
   const cautions = summary?.cautionCount ?? profile.checks.filter((check) => check.outcome === "caution").length;
   return [
     { sequence: 1, type: "simulation.created", message: "Read-only analysis record created." },
-    { sequence: 2, type: "contract.verified", message: `${runtimeBytes.toLocaleString()} runtime bytes retrieved from BOT Chain.` },
+    { sequence: 2, type: "contract.verified", message: `${runtimeBytes.toLocaleString()} runtime bytes retrieved from ${chain.name}.` },
     {
       sequence: 3,
       type: "contract.classified",

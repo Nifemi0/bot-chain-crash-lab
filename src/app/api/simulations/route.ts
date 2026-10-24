@@ -3,6 +3,7 @@ import { inspectBotChainContract } from "@/lib/rpc";
 import { createSimulation, parseContractAddress } from "@/lib/simulation";
 import { getBrowserSession, privateResponseHeaders } from "@/lib/session";
 import { listSimulations, saveSimulation } from "@/lib/storage";
+import { chainFor } from "@/lib/network";
 
 export const dynamic = "force-dynamic";
 
@@ -22,8 +23,10 @@ export async function POST(request: Request) {
     const session = getBrowserSession(request);
     const body = await readJsonObject(request);
     const address = parseContractAddress(body.contractAddress);
-    const { bytecode, analysis } = await inspectBotChainContract(address);
-    const simulation = createSimulation({ address, bytecode, analysis });
+    const chainId = Number(body.chainId ?? 677);
+    chainFor(chainId);
+    const { bytecode, analysis } = await inspectBotChainContract(address, undefined, chainId);
+    const simulation = createSimulation({ address, bytecode, analysis, chainId });
     await saveSimulation(simulation, session.id);
     return Response.json(simulation, {
       status: 201,

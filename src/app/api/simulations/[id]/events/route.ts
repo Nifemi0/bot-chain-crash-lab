@@ -22,7 +22,7 @@ export async function GET(
       runtimeBytes: numberParam("bytes", 100_000),
       checkCount: numberParam("checks", 100),
       cautionCount: numberParam("cautions", 100),
-    });
+    }, Number(searchParams.get("chainId") ?? 677));
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {

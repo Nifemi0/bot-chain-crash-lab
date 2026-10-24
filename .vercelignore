@@ -1,4 +1,6 @@
 .git/
+/.secrets/
+/.env.local
 .next/
 node_modules/
 coverage/

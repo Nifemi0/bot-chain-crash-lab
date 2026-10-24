@@ -1,0 +1,50 @@
+{
+  "product": "Crash Lab",
+  "network": "Robinhood Chain Mainnet",
+  "chainId": 4663,
+  "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+  "explorerUrl": "https://robinhoodchain.blockscout.com",
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "contracts": {
+    "mockBot": {
+      "contract": "MockBOT",
+      "address": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+      "transactionHash": "0x079abaa51c918cce0d62a6de30254e1c03d1253d439b88ae123389301eb46066",
+      "blockNumber": 97140393,
+      "gasUsed": "421792",
+      "effectiveGasPriceWei": "20020000",
+      "explorerUrl": "https://robinhoodchain.blockscout.com/address/0x48590156ceC049082695469A1749fED9DeF52eE5"
+    },
+    "vulnerableVault": {
+      "contract": "VulnerableVault",
+      "address": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+      "transactionHash": "0x61463e6020dd61b79773a1690ba75c87f7f9a3fce3680f13daf3751034692113",
+      "blockNumber": 97140473,
+      "gasUsed": "394674",
+      "effectiveGasPriceWei": "20056000",
+      "explorerUrl": "https://robinhoodchain.blockscout.com/address/0x756892F17A7F8d5b870ee2910DF610fEC2E1930C"
+    },
+    "patchedVault": {
+      "contract": "PatchedVault",
+      "address": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+      "transactionHash": "0x6af3c1131a7217676fcadce6a8e11d8dd3bcbe911b0d380733669177cf9104bc",
+      "blockNumber": 97140556,
+      "gasUsed": "433059",
+      "effectiveGasPriceWei": "20000000",
+      "explorerUrl": "https://robinhoodchain.blockscout.com/address/0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA"
+    },
+    "passport": {
+      "contract": "SimulationPassport",
+      "address": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B",
+      "transactionHash": "0x276abbb92d4063d49a17f212465b87426dcd2edb6d7e8831b81d3a52fa867488",
+      "blockNumber": 97140634,
+      "gasUsed": "554777",
+      "effectiveGasPriceWei": "20014000",
+      "explorerUrl": "https://robinhoodchain.blockscout.com/address/0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+    }
+  },
+  "createdAt": "2026-10-24T23:24:24.601Z",
+  "updatedAt": "2026-10-24T23:24:57.169Z",
+  "complete": true,
+  "remainingBalanceEth": "0.000403875655538"
+}

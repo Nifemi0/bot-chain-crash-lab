@@ -96,6 +96,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; text-transform: upper
 }
 .desktop-nav a:hover, .mobile-nav a:hover { color: var(--ink); }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
+.chain-picker select { max-width: 190px; min-height: 40px; padding: 0 10px; border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-family: var(--font-mono), monospace; font-size: 10px; cursor: pointer; }
+.chain-picker select:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
 .nav-cta { min-height: 48px; padding-inline: 28px; font-size: 14px; transition: min-height 320ms ease, transform 160ms ease, background 160ms ease; }
 .site-nav.is-scrolled .nav-cta { min-height: 42px; }
 .wallet-chip {
@@ -138,6 +140,8 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; text-transform: upper
   box-shadow: 0 18px 45px rgba(18, 17, 15, 0.16);
 }
 .mobile-nav.is-open { display: flex; }
+.mobile-nav__chain { display: grid; gap: 6px; padding: 12px 16px; font-family: var(--font-mono), monospace; font-size: 10px; text-transform: uppercase; }
+.mobile-nav__chain select { min-height: 42px; padding-inline: 10px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); }
 .mobile-nav a { min-height: 48px; display: flex; align-items: center; padding: 0 16px; }
 .mobile-nav .mobile-nav__cta { justify-content: center; margin-top: 8px; border: 1px solid var(--ink); border-radius: 999px; background: var(--yellow); color: var(--ink); font-weight: 600; }
 .mobile-nav__wallet {
@@ -771,6 +775,7 @@ h1, h2, h3 { font-family: var(--font-display), sans-serif; text-transform: upper
   .nav-wordmark, .site-nav.is-scrolled .nav-wordmark { font-size: clamp(18px, 5.4vw, 22px); }
   .nav-cta { display: none; }
   .wallet-chip { min-height: 36px; padding-inline: 12px; font-size: 8px; }
+  .chain-picker { display: none; }
   .mobile-nav { top: 68px; right: 16px; }
   .wallet-toast { top: calc(100% + 8px); right: 16px; }
   .hero, .hero__inner { min-height: 700px; }
