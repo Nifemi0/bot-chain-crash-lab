@@ -481,6 +481,14 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
 
         <section id="start-simulation" className="simulation-section">
           <div className="simulation-stack">
+            <header className="workspace-head">
+              <div>
+                <p className="eyebrow">Crash Lab / Contract intelligence</p>
+                <h1>See what the contract actually does.</h1>
+                <p>Start with a live, read-only review. Save the evidence, ask AI to explain it, and anchor a report when you are ready.</p>
+              </div>
+              <div className="workspace-head__status"><i />{network.name}<span>Live network</span></div>
+            </header>
             <nav className="workspace-nav" aria-label="Analysis workspace">
               <a href="#start-simulation"><span>Analyze</span><small>Check a contract address</small></a>
               <a href="#scan-history"><span>History</span><small>Reopen a private scan</small></a>
@@ -490,8 +498,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
             <div className="simulation-dossier">
               <span className="calibration-tab">LIVE RPC</span>
               <div className="simulation-dossier__intro">
-                <p className="eyebrow">Interactive evidence console</p>
-                <h2>Inspect a deployed contract</h2>
+                <p className="eyebrow">New analysis</p>
+                <h2>Enter a contract address</h2>
                 <p>
                   Submit any deployed {network.name} address for a read-only surface analysis. Crash Lab&apos;s fixed demo vaults
                   also support a controlled demonstration on an isolated chain fork.

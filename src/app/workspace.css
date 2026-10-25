@@ -98,3 +98,56 @@
   .workspace-redesign .mobile-workspace-nav a { color: #f4f5ed; }
   .workspace-redesign .mobile-workspace-nav a:first-child { color: #f4d64e; }
 }
+
+/* Product-first dashboard: the analyzer owns the first screen. */
+.workspace-redesign { --paper: #eef1eb; --paper-deep: #f9fbf7; --ink: #17221b; --muted: #59695d; --rule: #d5ded3; background: #eef1eb; }
+.workspace-redesign main { display: block; }
+.workspace-redesign .hero, .workspace-redesign .capability-rail, .workspace-redesign .failure-ledger { display: none; }
+.workspace-redesign .simulation-section { padding: 48px clamp(24px, 4vw, 64px) 80px; }
+.workspace-redesign .simulation-stack { max-width: 1280px; gap: 24px; }
+.workspace-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; padding: 0 0 12px; }
+.workspace-head h1 { max-width: 700px; margin: 0; font-size: clamp(34px, 4.4vw, 62px); line-height: 1.02; font-weight: 700; }
+.workspace-head p:last-child { max-width: 670px; margin: 16px 0 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.workspace-head__status { display: grid; grid-template-columns: 8px auto; gap: 5px 9px; align-items: center; min-width: 182px; padding: 16px; border: 1px solid var(--rule); border-radius: 10px; background: #fff; font-size: 12px; font-weight: 700; }
+.workspace-head__status i { width: 8px; height: 8px; border-radius: 50%; background: #28b36d; box-shadow: 0 0 0 4px #d9f4e4; }
+.workspace-head__status span { grid-column: 2; color: var(--muted); font-size: 11px; font-weight: 400; }
+.workspace-redesign .workspace-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); order: 2; }
+.workspace-redesign .workspace-nav a { position: relative; background: transparent; border: 0; border-top: 1px solid var(--rule); border-radius: 0; padding: 17px 0 10px; }
+.workspace-redesign .workspace-nav a::after { content: '↗'; position: absolute; right: 4px; top: 16px; color: #8e9f8e; }
+.workspace-redesign .workspace-nav a:hover { background: transparent; border-top-color: #1b6e46; }
+.workspace-redesign .workspace-nav span { font-size: 14px; }
+.workspace-redesign .workspace-nav small { font-size: 11px; }
+.workspace-redesign .simulation-dossier { order: 1; background: #18271d; color: #f5faef; border: 0; padding: 42px; border-radius: 16px; }
+.workspace-redesign .simulation-dossier .eyebrow, .workspace-redesign .simulation-dossier__intro > p:last-child, .workspace-redesign .runner__form label, .workspace-redesign .runner__status { color: #b9caba; }
+.workspace-redesign .simulation-dossier__intro h2 { font-size: clamp(24px, 2.4vw, 35px); }
+.workspace-redesign .simulation-dossier__intro > p:last-child { margin-top: 10px; max-width: 620px; }
+.workspace-redesign .calibration-tab { background: #f4d64e; color: #18271d; font-weight: 700; }
+.workspace-redesign .runner__controls { grid-template-columns: minmax(0, 1fr) max-content; }
+.workspace-redesign .runner__controls input { background: #f9fbf7; border: 2px solid transparent; height: 60px; }
+.workspace-redesign .runner__controls input:focus { border-color: #f4d64e; }
+.workspace-redesign .runner__controls .button { background: #f4d64e; color: #17221b; border-color: #f4d64e; min-height: 60px; }
+.workspace-redesign .text-button { color: #f4d64e; text-decoration-color: #a8973d; }
+.workspace-redesign .scan-history { order: 3; }
+.workspace-redesign .console, .workspace-redesign .finding, .workspace-redesign .fork-replay, .workspace-redesign .ai-investigation, .workspace-redesign .passport-proof { order: 4; }
+.workspace-redesign .site-nav { background: #122018; }
+.workspace-redesign .desktop-nav a:first-child { background: #234332; color: #eaf8e9; }
+.workspace-redesign .desktop-nav a:hover { background: #2c4b36; }
+.workspace-redesign .site-footer { background: #dfe8db; }
+@media (max-width: 1100px) {
+  .workspace-redesign .simulation-section { padding-top: 105px; }
+}
+@media (max-width: 700px) {
+  .workspace-redesign .simulation-section { padding: 98px 16px 36px; }
+  .workspace-head { display: block; padding-bottom: 0; }
+  .workspace-head h1 { font-size: clamp(29px, 9vw, 42px); line-height: 1.08; }
+  .workspace-head p:last-child { margin-top: 12px; font-size: 13px; }
+  .workspace-head__status { width: fit-content; min-width: 0; margin-top: 18px; padding: 9px 12px; display: flex; gap: 8px; }
+  .workspace-head__status span { display: none; }
+  .workspace-redesign .simulation-stack { gap: 18px; }
+  .workspace-redesign .simulation-dossier { padding: 42px 20px 22px; border-radius: 12px; }
+  .workspace-redesign .runner__controls { grid-template-columns: 1fr; }
+  .workspace-redesign .runner__controls input { width: 100%; font-size: 16px; }
+  .workspace-redesign .runner__controls .button { width: 100%; min-height: 52px; }
+  .workspace-redesign .workspace-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .workspace-redesign .workspace-nav a { padding: 13px 0 4px; }
+}
