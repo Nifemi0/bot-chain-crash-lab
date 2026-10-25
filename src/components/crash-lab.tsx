@@ -379,7 +379,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           <a href="#scan-history" onClick={closeMenu}>Saved scans</a>
           <a href="#demo-lab" onClick={closeMenu}>Demo Lab</a>
           <a href="#passport" onClick={closeMenu}>Passport</a>
-          <a href="#how-it-works" onClick={closeMenu}>How it works</a>
+          <a href="#start-simulation" onClick={closeMenu}>New analysis</a>
           <button type="button" className="mobile-nav__wallet" onClick={() => { closeMenu(); void connectWallet(); }}>
             {walletAddress ? `Wallet ${shorten(walletAddress, 5)}` : "Connect wallet"}
           </button>
@@ -818,7 +818,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
             <p>Live smart-contract evidence and isolated vault replays for {network.name}.</p>
           </div>
           <nav className="footer-links" aria-label="Footer navigation">
-            <div><strong>Analyze</strong><a href="#start-simulation">Contract analyzer</a><a href="#simulator">How it works</a><a href="#how-it-works">Analysis checks</a></div>
+            <div><strong>Workspace</strong><a href="#start-simulation">Contract analyzer</a><a href="#scan-history">Saved scans</a><a href="#demo-lab">Demo Lab</a></div>
             <div><strong>Resources</strong><a href="/api/health">API health</a><a href="/demo/crash-lab-demo.mp4" target="_blank" rel="noreferrer">Demo video ↗</a><a href="https://github.com/Nifemi0/bot-chain-crash-lab" target="_blank" rel="noreferrer">GitHub source ↗</a></div>
             <div><strong>{network.name}</strong><a href={network.explorerUrl} target="_blank" rel="noreferrer">Block explorer ↗</a><a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport contract ↗</a></div>
           </nav>
