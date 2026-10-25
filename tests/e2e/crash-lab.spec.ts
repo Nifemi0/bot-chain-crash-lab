@@ -44,10 +44,10 @@ test("footer exposes only real destinations and plain network metadata", async (
   const footer = page.locator("footer");
   await expect(footer.getByRole("link")).toHaveCount(8);
   await expect(footer.locator('a[href="https://rpc.bohr.life"]')).toHaveCount(0);
-  await expect(footer.getByText("BOT Chain · 677", { exact: true })).toBeVisible();
-  await expect(footer.getByText("Read-only inspection", { exact: true })).toBeVisible();
+  await expect(footer.getByText("BOT Chain Mainnet · 677", { exact: true })).toBeVisible();
+  await expect(footer.getByText("Read-only scan + vault fork", { exact: true })).toBeVisible();
   await expect(footer.getByRole("link", { name: "API health" })).toHaveAttribute("href", "/api/health");
-  await expect(footer.getByRole("link", { name: "BOTScan explorer ↗" })).toHaveAttribute("href", "https://scan.botchain.ai");
+  await expect(footer.getByRole("link", { name: "Block explorer ↗" })).toHaveAttribute("href", "https://scan.botchain.ai");
 });
 
 test("reference contract returns live analysis without simulated claims", async ({ page }) => {
@@ -60,7 +60,32 @@ test("reference contract returns live analysis without simulated claims", async 
   await expect(page.locator('[data-event-type="invariant.failed"]')).toHaveCount(0);
   await expect(page.locator('[data-event-type="replay.completed"]')).toHaveCount(0);
   await expect(page.getByTestId("finding-report")).toContainText("surface analysis");
-  await expect(page.getByTestId("finding-report")).toContainText("does not simulate exploits");
+  await expect(page.getByTestId("finding-report")).toContainText("surface report is read-only");
+  await expect(page.getByTestId("fork-replay")).toBeVisible();
+});
+
+test("vault replay displays fork-only evidence separately from the scan", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.route("**/api/fork-replays", async (route) => {
+    await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({
+      replay: {
+        scenario: "erc4626-donation-inflation", outcome: "reproduced",
+        reason: "A non-zero victim deposit succeeded but minted zero shares on the isolated fork.",
+        chainId: 677, blockNumber: 20000000, contractAddress: "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+        codeHash: `0x${"1".repeat(64)}`, stateFixture: "live-snapshot", victimDepositAssets: "1000000000000000000",
+        victimShares: "0", evidenceHash: `0x${"2".repeat(64)}`, transactions: [
+          { label: "Victim deposit", hash: `0x${"3".repeat(64)}`, gasUsed: "41864" },
+        ], createdAt: new Date().toISOString(),
+      },
+    }) });
+  });
+  await page.goto("/");
+  await page.getByTestId("start-simulation").click();
+  await expect(page.getByTestId("run-fork-replay")).toBeVisible({ timeout: 30_000 });
+  await page.getByTestId("run-fork-replay").click();
+  await expect(page.getByTestId("fork-replay-result")).toContainText("Zero-share deposit reproduced");
+  await expect(page.getByTestId("fork-replay-result")).toContainText("Fork-only transactions");
+  await expect(page.getByTestId("fork-replay-result")).toContainText("not mainnet explorer links");
 });
 
 test("invalid input returns a safe validation error", async ({ page }) => {

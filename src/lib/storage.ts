@@ -109,3 +109,15 @@ export async function claimAiInvestigationQuota(sessionId: string) {
 
   return { sessionRemaining: 3 - sessionCount };
 }
+
+export async function claimForkReplayQuota(sessionId: string) {
+  const sessionCount = await incrementAiUsage(`fork-session:${sessionId}`, 2);
+  if (sessionCount === null) {
+    throw new Error("Daily fork replay limit reached for this browser. Try again tomorrow.");
+  }
+  const globalCount = await incrementAiUsage("fork-global", 20);
+  if (globalCount === null) {
+    throw new Error("Today's shared fork replay allowance has been used. Try again tomorrow.");
+  }
+  return { sessionRemaining: 2 - sessionCount };
+}

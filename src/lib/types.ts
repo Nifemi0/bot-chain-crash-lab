@@ -90,6 +90,30 @@ export type SimulationFinding = {
   afterVictimShares: string;
 };
 
+export type ForkReplay = {
+  scenario: "erc4626-donation-inflation";
+  outcome: "reproduced" | "not-reproduced" | "deposit-reverted" | "inconclusive";
+  reason: string;
+  chainId: number;
+  blockNumber: number;
+  blockHash: string;
+  contractAddress: string;
+  codeHash: string;
+  assetAddress?: string;
+  stateFixture?: "live-snapshot" | "reference-empty-reset";
+  observedSupply?: string;
+  observedAssets?: string;
+  initialSupply?: string;
+  initialAssets?: string;
+  seedAssets?: string;
+  donatedAssets?: string;
+  victimDepositAssets?: string;
+  victimShares?: string;
+  transactions: { label: string; hash: string; gasUsed: string }[];
+  evidenceHash: string;
+  createdAt: string;
+};
+
 export type PassportEvidence = {
   contractAddress: string;
   simulationId: string | null;
@@ -138,4 +162,5 @@ export type Simulation = {
   eventsUrl: string;
   createdAt: string;
   aiInvestigation?: AiInvestigation;
+  forkReplay?: ForkReplay;
 };

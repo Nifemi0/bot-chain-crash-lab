@@ -1,0 +1,9 @@
+{
+  "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+  "chainId": 4663,
+  "contractAddress": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+  "codeHash": "0xae46707de22cee42d5802d49ed6bbb886041e294a9379e10a33d0a7219f7c8d1",
+  "blockNumber": 97465803,
+  "emptyReferenceFixture": true,
+  "expectedAssetAddress": "0x48590156ceC049082695469A1749fED9DeF52eE5"
+}

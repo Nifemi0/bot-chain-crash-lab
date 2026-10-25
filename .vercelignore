@@ -18,3 +18,7 @@ public/voiceover/*
 !public/voiceover/crash-lab-demo-v2.mp3
 *.log
 *.tsbuildinfo
+crashlab-rollout.png
+submission-confirmation.png
+tests/fixtures/
+scripts/fork/smoke-sandbox.mjs

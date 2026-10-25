@@ -1,11 +1,11 @@
 # Crash Lab
 
-Crash Lab is an evidence-grounded smart-contract investigation workflow for BOT Chain. It retrieves live runtime bytecode, probes standard interfaces and proxy storage, reviews executable opcode surfaces, and asks DeepSeek V4 Flash to select complementary read-only probes and cite the evidence it used.
+Crash Lab is an evidence-grounded smart-contract investigation workflow for BOT Chain and Robinhood Chain. It retrieves live runtime bytecode, probes standard interfaces and proxy storage, reviews executable opcode surfaces, and asks DeepSeek V4 Flash to select complementary read-only probes and cite the evidence it used.
 
-The analysis itself is read-only and never calls the submitted contract. After the AI report is complete, a connected wallet can optionally anchor the exact report hash in a zero-value BOT Chain Mainnet transaction. The application never presents a simulated exploit as a live result.
+The universal scan and AI investigation are read-only. ERC-4626 vaults can additionally run a separate donation-inflation test inside a short-lived Vercel Sandbox using a pinned Anvil fork. Fork transactions never reach mainnet. After the AI report is complete, a connected wallet can optionally anchor the exact AI report hash in a zero-value transaction on the selected chain. This does not currently anchor fork replay evidence.
 
-**Live application:** [bot-chain-crash-lab.vercel.app](https://bot-chain-crash-lab.vercel.app)
-**Demo video:** [2:49 product walkthrough](https://bot-chain-crash-lab.vercel.app/demo/crash-lab-demo.mp4)
+**Live application:** [crashlab.nuvixes.studio](https://crashlab.nuvixes.studio)
+**Demo video:** [2:49 product walkthrough](https://crashlab.nuvixes.studio/demo/crash-lab-demo.mp4)
 
 ## Mainnet deployment
 
@@ -56,6 +56,14 @@ npm run dev
 
 Open `http://localhost:3000`. The checked-in example configuration targets BOT Chain Mainnet; use separate local values when reproducing the archived testnet run.
 
+## Isolated vault replay
+
+The `/api/fork-replays` route accepts a private scan ID for a classified ERC-4626 vault. It forks the selected chain at a current block, runs a first deposit, direct donation, and victim deposit, and records the resulting shares plus fork-only transaction hashes. The runner uses a fixed, audited scenario—not AI-generated code. It is limited to two runs per browser and twenty shared runs per day. The first version requires an empty vault and a public `mint(address,uint256)` interface on the asset. If these prerequisites are absent, the result is **inconclusive**, not safe.
+
+The two deployed Crash Lab reference vaults may use a clearly labeled empty-state fixture on the fork. Third-party vault state is not reset. The returned evidence hash is separate from the AI-report hash and is not yet published through the Passport.
+
+Vercel Sandbox requires project OIDC authentication. For local testing, link the project and pull development environment variables with the Vercel CLI; never put the OIDC token or RPC credentials in client-side variables. The replay runner is in `scripts/fork/replay-erc4626.mjs`, with manual Vercel Sandbox smoke tests in `scripts/fork/smoke-sandbox.mjs`.
+
 ## Wallet and AI workflow
 
 1. Connect an injected EVM wallet and switch to the configured network.
@@ -104,6 +112,7 @@ The mainnet scripts are separate, explicitly chain-locked to `677`, require the 
 | `GET` | `/api/simulations/{id}/events` | Stream deterministic read-only analysis events over SSE |
 | `GET` | `/api/simulations/{id}/finding` | Return the scoped live finding |
 | `POST` | `/api/ai/investigations` | Run the rate-limited, evidence-citing DeepSeek investigation |
+| `POST` | `/api/fork-replays` | Run the rate-limited ERC-4626 donation scenario on an isolated chain fork |
 | `GET` | `/api/health` | Verify RPC, chain ID, and reference bytecode readiness |
 
 ## Repository map

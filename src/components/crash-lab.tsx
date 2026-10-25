@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { BrowserProvider, type Eip1193Provider } from "ethers";
 import { createAttestationData } from "@/lib/attestation";
-import type { AiInvestigation, CanonicalRun, Simulation, SimulationEvent } from "@/lib/types";
+import type { AiInvestigation, CanonicalRun, ForkReplay, Simulation, SimulationEvent } from "@/lib/types";
 
 const IMPACT_RIG_URL = "/images/protocol-impact-rig.webp";
 
@@ -52,6 +52,9 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
   const [aiInvestigation, setAiInvestigation] = useState<AiInvestigation | null>(null);
   const [aiState, setAiState] = useState<"idle" | "running" | "complete" | "error">("idle");
   const [aiMessage, setAiMessage] = useState("The agent will choose read-only probes and cite every observation.");
+  const [forkReplay, setForkReplay] = useState<ForkReplay | null>(null);
+  const [forkState, setForkState] = useState<"idle" | "running" | "complete" | "error">("idle");
+  const [forkMessage, setForkMessage] = useState("Run the donation-inflation scenario on an isolated chain fork. No mainnet transactions are sent.");
   const [state, setState] = useState<"idle" | "creating" | "streaming" | "complete" | "error">("idle");
   const [message, setMessage] = useState(`Reference contract loaded. Analysis uses live ${network.name} data only.`);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -101,6 +104,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
     setEvents([]);
     setAiInvestigation(null);
     setAiState("idle");
+    setForkReplay(null);
+    setForkState("idle");
     setState("creating");
     setMessage(`Verifying bytecode on ${network.name}…`);
 
@@ -116,6 +121,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
       setSimulation(result);
       setAiInvestigation(result.aiInvestigation ?? null);
       setAiState(result.aiInvestigation ? "complete" : "idle");
+      setForkReplay(result.forkReplay ?? null);
+      setForkState(result.forkReplay ? "complete" : "idle");
       setHistory((current) => [
         result,
         ...current.filter((item) => item.simulationId !== result.simulationId),
@@ -159,6 +166,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
     setEvents([]);
     setAiInvestigation(null);
     setAiState("idle");
+    setForkReplay(null);
+    setForkState("idle");
     setState("idle");
     setWalletAddress(null);
     setWalletState("idle");
@@ -175,6 +184,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
     setSimulation(saved);
     setAiInvestigation(saved.aiInvestigation ?? null);
     setAiState(saved.aiInvestigation ? "complete" : "idle");
+    setForkReplay(saved.forkReplay ?? null);
+    setForkState(saved.forkReplay ? "complete" : "idle");
     setEvents([]);
     setState("complete");
     setMessage(`${shorten(saved.simulationId, 8)} reopened from private analysis history.`);
@@ -215,6 +226,30 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
     } catch (error) {
       setAiState("error");
       setAiMessage(error instanceof Error ? error.message : "AI investigation could not be completed.");
+    }
+  }
+
+  async function runForkReplay() {
+    if (!simulation) return;
+    setForkState("running");
+    setForkMessage("Starting an isolated fork and executing the ERC-4626 donation scenario. This can take a few minutes…");
+    try {
+      const response = await fetch("/api/fork-replays", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ simulationId: simulation.simulationId }),
+      });
+      const result = (await response.json()) as { replay?: ForkReplay; error?: string };
+      if (!response.ok || !result.replay) throw new Error(result.error ?? "Fork replay did not complete.");
+      setForkReplay(result.replay);
+      setSimulation((current) => current ? { ...current, forkReplay: result.replay } : current);
+      setHistory((current) => current.map((item) => item.simulationId === simulation.simulationId
+        ? { ...item, forkReplay: result.replay } : item));
+      setForkState("complete");
+      setForkMessage("Fork replay complete. Only transactions inside the isolated fork were executed.");
+    } catch (error) {
+      setForkState("error");
+      setForkMessage(error instanceof Error ? error.message : "Fork replay did not complete.");
     }
   }
 
@@ -369,13 +404,13 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               </h1>
               <p className="hero__lede">
                 Analyze any deployed {network.name} contract using its live runtime bytecode, read-only interface
-                probes, proxy storage, and risk-surface checks. No simulated exploit results.
+                probes, proxy storage, and risk-surface checks. Eligible vaults can then run a real attack sequence on an isolated fork.
               </p>
               <div className="hero__actions">
                 <a className="button button--primary" href="#start-simulation">Analyze contract</a>
                 <a className="button button--dark" href="#simulator">See how evidence is collected</a>
               </div>
-              <p className="safety-note">Analysis is read only · wallet attestations are optional · no simulated vulnerability claims</p>
+              <p className="safety-note">Live scans are read-only · fork transactions never reach mainnet · wallet attestations are optional</p>
             </div>
 
             <div className="hero__art" aria-label="Physical protocol impact rig striking a smart-contract vault specimen">
@@ -405,7 +440,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
 
         <section id="how-it-works" className="capability-rail" aria-label="Crash Lab capabilities">
           <div className="section-shell">
-            {["Live bytecode retrieval", "Interface classification", "Proxy detection", "Opcode surface checks"].map((item) => (
+            {["Live bytecode retrieval", "Interface classification", "Proxy detection", "Isolated vault replay"].map((item) => (
               <div key={item}><i />{item}</div>
             ))}
           </div>
@@ -415,12 +450,12 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           <div className="section-shell">
             <div className="failure-ledger__heading">
               <h2>Inside the analysis:<span>Live evidence</span></h2>
-              <strong className="run-badge run-badge--replay">READ ONLY</strong>
+              <strong className="run-badge run-badge--replay">SCAN + FORK</strong>
             </div>
 
             <div className="ledger-rows" data-stage="replay">
               <article className="is-active">
-                <div className="ledger-row__phase">01 / Runtime</div>
+                <div className="ledger-row__phase">Runtime</div>
                 <div>
                   <h3>Deployed bytecode</h3>
                   <p>The analyzer retrieves the exact runtime code currently stored at the submitted {network.name} address.</p>
@@ -432,7 +467,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               </article>
 
               <article>
-                <div className="ledger-row__phase">02 / Interfaces</div>
+                <div className="ledger-row__phase">Interfaces</div>
                 <div>
                   <h3>Read-only probes</h3>
                   <p>Standard interface calls and the EIP-1967 implementation slot are checked without submitting a transaction.</p>
@@ -444,13 +479,13 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               </article>
 
               <article>
-                <div className="ledger-row__phase">03 / Report</div>
+                <div className="ledger-row__phase">Report</div>
                 <div>
                   <h3>Evidence, not guesses</h3>
                   <p>Capabilities and cautionary opcodes are reported as review targets, never as automatically proven exploits.</p>
                 </div>
                 <div className="ledger-row__value ledger-row__value--green">
-                  NO SIMULATION · READ ONLY
+                  READ-ONLY BASELINE
                 </div>
                 <i className="ledger-row__light" />
               </article>
@@ -466,8 +501,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                 <p className="eyebrow">Interactive evidence console</p>
                 <h2>Inspect a deployed contract</h2>
                 <p>
-                  Submit any deployed {network.name} address. Every contract receives a universal read-only
-                  surface analysis. Results come from deployed bytecode and read-only RPC probes only.
+                  Submit any deployed {network.name} address for a read-only surface analysis. ERC-4626 vaults
+                  can also run a separate donation-attack replay on an isolated chain fork.
                 </p>
               </div>
 
@@ -489,9 +524,14 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   </button>
                 </div>
                 <div className="runner__footer">
-                  <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>
-                    Use deployed reference contract
-                  </button>
+                  <div className="runner__examples">
+                    <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>
+                      Use deployed reference contract
+                    </button>
+                    <button type="button" className="text-button" onClick={() => setAddress(contracts.patchedVault)}>
+                      Compare patched vault
+                    </button>
+                  </div>
                   <p id="simulation-status" className={`runner__status runner__status--${state}`} role="status" aria-live="polite">{message}</p>
                 </div>
               </form>
@@ -581,9 +621,59 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   ))}
                 </div>
                 <p className="finding__disclaimer">
-                  This report contains live read-only observations. It does not simulate exploits and is not a full audit or proof of safety.
+                  This surface report is read-only. A fork replay, when available below, is a separate executed test—not a full audit or proof of safety.
                 </p>
               </article>
+            )}
+
+            {simulation && state === "complete" && simulation.analysis.kind === "erc4626-vault" && (
+              <section className="fork-replay" data-testid="fork-replay" aria-labelledby="fork-replay-title">
+                <div className="fork-replay__intro">
+                  <div>
+                    <p className="eyebrow">Isolated attack replay</p>
+                    <h3 id="fork-replay-title">Test the vault, not the live chain.</h3>
+                  </div>
+                  <span>ERC-4626 · DONATION INFLATION</span>
+                </div>
+                <p>
+                  Crash Lab forks a pinned {network.name} block, funds two test accounts on that fork,
+                  makes a first deposit and direct donation, then checks whether a non-zero victim deposit mints zero shares.
+                  This template needs an empty vault and an asset with a usable public mint function on the fork.
+                  The deployed Crash Lab reference vault uses a disclosed empty-state fixture; third-party vaults do not.
+                </p>
+                {!forkReplay && (
+                  <button className="button button--primary" type="button" onClick={runForkReplay}
+                    disabled={forkState === "running"} data-testid="run-fork-replay">
+                    {forkState === "running" ? "Replaying on fork…" : "Run isolated vault replay"}
+                  </button>
+                )}
+                <p className={`fork-replay__status fork-replay__status--${forkState}`} role="status" aria-live="polite">{forkMessage}</p>
+                {forkReplay && (
+                  <div className="fork-replay__result" data-testid="fork-replay-result">
+                    <strong className={`fork-replay__outcome fork-replay__outcome--${forkReplay.outcome}`}>
+                      {forkReplay.outcome === "reproduced" ? "Zero-share deposit reproduced" : forkReplay.outcome.replaceAll("-", " ")}
+                    </strong>
+                    <p>{forkReplay.reason}</p>
+                    <dl>
+                      <div><dt>Pinned block</dt><dd>{forkReplay.blockNumber.toLocaleString()}</dd></div>
+                      <div><dt>Block hash</dt><dd>{forkReplay.blockHash}</dd></div>
+                      <div><dt>Starting state</dt><dd>{forkReplay.stateFixture === "reference-empty-reset" ? "Reference fixture: supply and vault asset balance reset on fork" : "Live snapshot (unchanged)"}</dd></div>
+                      <div><dt>Victim deposit</dt><dd>{forkReplay.victimDepositAssets ?? "not reached"} asset units</dd></div>
+                      <div><dt>Victim shares</dt><dd>{forkReplay.victimShares ?? "not measured"}</dd></div>
+                      <div><dt>Evidence hash</dt><dd>{forkReplay.evidenceHash}</dd></div>
+                    </dl>
+                    {forkReplay.transactions.length > 0 && (
+                      <div className="fork-replay__transactions">
+                        <h4>Fork-only transactions</h4>
+                        {forkReplay.transactions.map((transaction) => (
+                          <div key={transaction.hash}><span>{transaction.label}</span><code>{shorten(transaction.hash, 10)}</code></div>
+                        ))}
+                      </div>
+                    )}
+                    <small>Fork transaction hashes are local evidence, not mainnet explorer links. An inconclusive or non-reproduced result is not a safety certification.</small>
+                  </div>
+                )}
+              </section>
             )}
 
             {simulation && state === "complete" && (
@@ -718,7 +808,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           <div className="footer-brand">
             <div className="footer-brand__lockup"><Image src="/images/crash-lab-mark.png" alt="" width={54} height={54} /><strong>CRASH LAB</strong></div>
             <span>Experimental protocol hardening</span>
-            <p>Live read-only smart-contract inspection for {network.name}.</p>
+            <p>Live smart-contract evidence and isolated vault replays for {network.name}.</p>
           </div>
           <nav className="footer-links" aria-label="Footer navigation">
             <div><strong>Analyze</strong><a href="#start-simulation">Contract analyzer</a><a href="#simulator">How it works</a><a href="#how-it-works">Analysis checks</a></div>
@@ -730,7 +820,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           <span>© 2026 CRASH LAB V1</span>
           <div className="footer-meta" aria-label="Network information">
             <span>{network.name} · {network.chainId}</span>
-            <span>Read-only inspection</span>
+            <span>Read-only scan + vault fork</span>
             <span>Optional wallet attestation</span>
           </div>
         </div>
