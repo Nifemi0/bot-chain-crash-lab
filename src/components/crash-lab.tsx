@@ -337,9 +337,9 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           </a>
 
           <nav className="desktop-nav" aria-label="Primary navigation">
-            <a href="#how-it-works">How it works</a>
-            <a href="#simulator">Method</a>
-            <a href="#start-simulation">Analyzer</a>
+            <a href="#start-simulation">Analyze</a>
+            <a href="#scan-history">History</a>
+            <a href="#demo-lab">Demo Lab</a>
             <a href="#passport">Passport</a>
           </nav>
 
@@ -376,11 +376,11 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               {networks.map((item) => <option key={item.chainId} value={item.chainId}>{item.name}</option>)}
             </select>
           </label>
-          <a href="#how-it-works" onClick={closeMenu}>How it works</a>
-          <a href="#simulator" onClick={closeMenu}>Method</a>
-          <a href="#start-simulation" onClick={closeMenu}>Analyzer</a>
+          <a href="#start-simulation" onClick={closeMenu}>Analyze a contract</a>
+          <a href="#scan-history" onClick={closeMenu}>Saved scans</a>
+          <a href="#demo-lab" onClick={closeMenu}>Demo Lab</a>
           <a href="#passport" onClick={closeMenu}>Passport</a>
-          <a className="mobile-nav__cta" href="#start-simulation" onClick={closeMenu}>Analyze a contract</a>
+          <a href="#how-it-works" onClick={closeMenu}>How it works</a>
           <button type="button" className="mobile-nav__wallet" onClick={() => { closeMenu(); void connectWallet(); }}>
             {walletAddress ? `Wallet ${shorten(walletAddress, 5)}` : "Connect wallet"}
           </button>
@@ -496,6 +496,12 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
 
         <section id="start-simulation" className="simulation-section">
           <div className="simulation-stack">
+            <nav className="workspace-nav" aria-label="Analysis workspace">
+              <a href="#start-simulation"><span>Analyze</span><small>Check a contract address</small></a>
+              <a href="#scan-history"><span>History</span><small>Reopen a private scan</small></a>
+              <a href="#demo-lab"><span>Demo Lab</span><small>Explore our sample vaults</small></a>
+              <a href="#passport"><span>Passport</span><small>Inspect on-chain evidence</small></a>
+            </nav>
             <div className="simulation-dossier">
               <span className="calibration-tab">LIVE RPC</span>
               <div className="simulation-dossier__intro">
@@ -525,7 +531,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   </button>
                 </div>
                 <div className="runner__footer">
-                  <div className="runner__examples">
+                  <div id="demo-lab" className="runner__examples">
                     <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>
                       Use deployed reference contract
                     </button>
@@ -538,7 +544,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               </form>
             </div>
 
-            <section className="scan-history" data-testid="scan-history" aria-labelledby="scan-history-title">
+            <section id="scan-history" className="scan-history" data-testid="scan-history" aria-labelledby="scan-history-title">
               <div className="scan-history__heading">
                 <div>
                   <p className="eyebrow">Private session ledger</p>
@@ -803,6 +809,13 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           </div>
         </section>
       </main>
+
+      <nav className="mobile-workspace-nav" aria-label="Workspace shortcuts">
+        <a href="#start-simulation">Analyze</a>
+        <a href="#scan-history">History</a>
+        <a href="#demo-lab">Demo Lab</a>
+        <a href="#passport">Passport</a>
+      </nav>
 
       <footer className="site-footer">
         <div className="section-shell site-footer__grid">
