@@ -1,0 +1,53 @@
+{
+  "network": {
+    "name": "Robinhood Chain Mainnet",
+    "chainId": 4663,
+    "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+    "explorerUrl": "https://robinhoodchain.blockscout.com"
+  },
+  "contracts": {
+    "mockBot": "0x48590156ceC049082695469A1749fED9DeF52eE5",
+    "vulnerableVault": "0x756892F17A7F8d5b870ee2910DF610fEC2E1930C",
+    "patchedVault": "0x696A0e79973711BCC89E52EDfdbA34cEA972A6aA",
+    "passport": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B"
+  },
+  "deployer": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652",
+  "publisher": {
+    "address": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652"
+  },
+  "attack": {
+    "transactionHashes": [
+      "0xd878602e433d006cb5f6c9fd58e0e1ab5dbf55c91d88ad165e4eea8ae45ec35b",
+      "0xa61a9d1806d66c6ad9eb869c2927c8d2ba4996788ef4042f48acfeb0ceb0fd4a",
+      "0xead2e9ea667ca1b6734f120c8f0f8205064e7e177c69ef2494149e2f355a4795",
+      "0x35c29e52ddf961dac11254f4d1a085e6521392f4f6940a0bc1cd932de76c2db3",
+      "0x0b3fc7c211c447d06cbbb21f754944515f5d30bc7cffaa507e09302ec824add1",
+      "0x6d3c8607f383d2912a00628c0008eda77cf658fee94efa5252a6dfd0e1b71290",
+      "0xd4d8125b5ae9f54f147b6a707bf4df499c3e9dde175a0704c96b1a8379b64bf6",
+      "0xbc41ffb482cf3d9e62ab94e59f06ef5faca440e892101b4f196cecf26f18a08c"
+    ],
+    "victimShares": "0",
+    "attackerRecoveredAssets": "2.000000000000000001"
+  },
+  "replay": {
+    "transactionHashes": [
+      "0xac16d6f6d06eb8116a942e3a30ab18edaf0c17f07da4448d075ad0c0b97461a7",
+      "0xee236007de0e7b42616e3eb436d023c74bebc7ca21d71c30b8994fdb8115f624",
+      "0xc6e439092c835d2a66aebac97ba0497a93afa49671bc182eb168a906d5ea8dd0",
+      "0x4cf09a6c8cfecaaebaf84ff2195b008598d59e76bbfc7cb1363a433bca103fc8",
+      "0xfdb456bf927f568857a19dfbbf44f40a806c73fe67a323db2b07c040530d5ca1"
+    ],
+    "victimShares": "500000000000000000",
+    "invariantHeld": true
+  },
+  "passport": {
+    "contractAddress": "0x219A1cd376d72Bd5EeFABA61aD48C77BbcBa1e4B",
+    "simulationId": "0x04ba5493baa25aa75467450b10c435324401a5ff6f48dac9daf3531b333a12f2",
+    "reportHash": "0xcbb293e40e3ad334341ac60e806e531b8b7f9a8ca921e811e4529da7956340a6",
+    "sourceHash": "0x39756c8384dcf98e02ccd8fc22f4287ab49b61d5018a0ce6afc4bc2d725a7329",
+    "transactionHash": "0xa22e0b8245b7f714b47b946ef339cf22f8faec7fd166aa5473de7b08d74a1da1",
+    "blockNumber": 97428089,
+    "publisher": "0x9BE04a075a4f37985fAb13B6FC3a0c4aC58Be652"
+  },
+  "generatedAt": "2026-10-25T07:49:18.108Z"
+}

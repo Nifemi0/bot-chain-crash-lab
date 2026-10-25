@@ -1,4 +1,5 @@
 .secrets/
+deployments/robinhood/replay-progress.json
 .env
 .env.local
 .env.*.local

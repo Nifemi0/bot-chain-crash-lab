@@ -1,7 +1,9 @@
 import runJson from "@/data/canonical-run.json";
+import robinhoodRunJson from "../../deployments/robinhood/canonical-run.json";
 import type { CanonicalRun } from "@/lib/types";
 
 export const canonicalRun = runJson as CanonicalRun;
+export const robinhoodCanonicalRun = robinhoodRunJson as CanonicalRun;
 
 export function hasCanonicalRun(run: CanonicalRun = canonicalRun) {
   return Boolean(

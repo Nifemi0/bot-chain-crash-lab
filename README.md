@@ -39,9 +39,10 @@ Chain or Robinhood Chain. Scans, AI evidence probes, wallet switching, and
 explorer links follow the selected chain. The defaults use Robinhood's public
 RPC, which may be rate limited.
 
-The BOT Chain canonical exploit replay is displayed only when BOT Chain is
-selected. Robinhood's Passport contract is deployed, but no Robinhood replay
-has been published yet.
+Each chain has its own controlled exploit replay and Passport record. The
+Robinhood replay produced zero victim shares in the vulnerable vault and
+`500000000000000000` shares in the patched vault. Its [Passport transaction](https://robinhoodchain.blockscout.com/tx/0xa22e0b8245b7f714b47b946ef339cf22f8faec7fd166aa5473de7b08d74a1da1)
+anchors the evidence recorded in `deployments/robinhood/canonical-run.json`.
 
 ## Run locally
 

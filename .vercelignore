@@ -1,5 +1,6 @@
 .git/
 /.secrets/
+deployments/robinhood/replay-progress.json
 /.env.local
 .next/
 node_modules/

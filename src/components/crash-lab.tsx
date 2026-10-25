@@ -25,6 +25,8 @@ type Props = {
   networkContracts: Props["contracts"][];
   canonicalRun: CanonicalRun;
   canonicalRunReady: boolean;
+  robinhoodRun: CanonicalRun;
+  robinhoodRunReady: boolean;
 };
 
 const shorten = (value: string | null, size = 6) =>
@@ -36,9 +38,11 @@ function injectedWallet() {
   return (window as Window & { ethereum?: Eip1193Provider }).ethereum;
 }
 
-export function CrashLab({ network: initialNetwork, contracts: initialContracts, networks, networkContracts, canonicalRun, canonicalRunReady }: Props) {
+export function CrashLab({ network: initialNetwork, contracts: initialContracts, networks, networkContracts, canonicalRun: botCanonicalRun, canonicalRunReady: botRunReady, robinhoodRun, robinhoodRunReady }: Props) {
   const [network, setNetwork] = useState<Props["network"]>(initialNetwork);
   const [contracts, setContracts] = useState<Props["contracts"]>(initialContracts);
+  const canonicalRun = network.chainId === 4663 ? robinhoodRun : botCanonicalRun;
+  const canonicalRunReady = network.chainId === 4663 ? robinhoodRunReady : botRunReady;
   const canonicalMatchesNetwork = canonicalRun.network.chainId === network.chainId;
   const [address, setAddress] = useState(contracts.vulnerableVault);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
@@ -688,9 +692,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                 <p className="eyebrow">{network.name} Simulation Passport</p>
                 <h2>Controlled proof. On-chain.</h2>
                 <p>
-                  {canonicalMatchesNetwork
-                    ? "The Passport anchors the controlled donation-inflation specimen and its patched replay. It proves the evidence existed; it is not a blanket safety badge for arbitrary contracts."
-                    : "The Passport contract is deployed on Robinhood Chain. A network-specific replay has not been published here yet."}
+                  The Passport anchors the controlled donation-inflation specimen and its patched replay. It proves the evidence existed; it is not a blanket safety badge for arbitrary contracts.
                 </p>
               </div>
               <dl>
