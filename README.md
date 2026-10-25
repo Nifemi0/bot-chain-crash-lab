@@ -1,8 +1,13 @@
 # Crash Lab
 
+Built by [Nifemi](https://github.com/Nifemi0), founder of [Nuvixes](https://nuvixes.studio/).
+[Read the Crash Lab build story](https://nuvixes.studio/projects/crash-lab).
+
+Replay is restricted server-side to Crash Lab's fixed demo vault addresses on supported chains. All other contracts support read-only analysis only.
+
 Crash Lab is an evidence-grounded smart-contract investigation workflow for BOT Chain and Robinhood Chain. It retrieves live runtime bytecode, probes standard interfaces and proxy storage, reviews executable opcode surfaces, and asks DeepSeek V4 Flash to select complementary read-only probes and cite the evidence it used.
 
-The universal scan and AI investigation are read-only. ERC-4626 vaults can additionally run a separate donation-inflation test inside a short-lived Vercel Sandbox using a pinned Anvil fork. Fork transactions never reach mainnet. After the AI report is complete, a connected wallet can optionally anchor the exact AI report hash in a zero-value transaction on the selected chain. This does not currently anchor fork replay evidence.
+The universal scan and AI investigation are read-only. Crash Lab's fixed demo vaults additionally support a controlled test inside a short-lived Vercel Sandbox using a pinned Anvil fork. Fork transactions never reach mainnet. After the AI report is complete, a connected wallet can optionally anchor the exact AI report hash in a zero-value transaction on the selected chain. This does not currently anchor fork replay evidence.
 
 **Live application:** [crashlab.nuvixes.studio](https://crashlab.nuvixes.studio)
 **Demo video:** [2:49 product walkthrough](https://crashlab.nuvixes.studio/demo/crash-lab-demo.mp4)

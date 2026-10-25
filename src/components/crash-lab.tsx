@@ -502,8 +502,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                 <p className="eyebrow">Interactive evidence console</p>
                 <h2>Inspect a deployed contract</h2>
                 <p>
-                  Submit any deployed {network.name} address for a read-only surface analysis. ERC-4626 vaults
-                  can also run a separate donation-attack replay on an isolated chain fork.
+                  Submit any deployed {network.name} address for a read-only surface analysis. Crash Lab&apos;s fixed demo vaults
+                  also support a controlled demonstration on an isolated chain fork.
                 </p>
               </div>
 
@@ -640,7 +640,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   Crash Lab forks a pinned {network.name} block, funds two test accounts on that fork,
                   makes a first deposit and direct donation, then checks whether a non-zero victim deposit mints zero shares.
                   This template needs an empty vault and an asset with a usable public mint function on the fork.
-                  Replay is available only for Crash Lab's fixed demo vaults. Other contracts receive read-only analysis.
+                  Replay is available only for Crash Lab&apos;s fixed demo vaults. Other contracts receive read-only analysis.
                 </p>
                 {!forkReplay && (
                   <button className="button button--primary" type="button" onClick={runForkReplay}
