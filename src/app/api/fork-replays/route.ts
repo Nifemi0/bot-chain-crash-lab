@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Sandbox } from "@vercel/sandbox";
+import { isDemoReplayTarget } from "@/lib/replay-policy";
 import { keccak256, toUtf8Bytes } from "ethers";
 import { errorResponse, readJsonObject } from "@/lib/api";
 import { contractsFor, chainFor } from "@/lib/network";
@@ -31,6 +32,9 @@ export async function POST(request: Request) {
     }
     const simulation = await getSimulation(simulationId, session.id);
     if (!simulation) return errorResponse(new Error("Private analysis was not found."), 404);
+    if (!isDemoReplayTarget(simulation.chainId, simulation.contractAddress)) {
+      return errorResponse(new Error("Replay is limited to Crash Lab's fixed demo contracts. Other contracts support read-only analysis."), 403);
+    }
     if (simulation.analysis.kind !== "erc4626-vault") {
       return errorResponse(new Error("The first fork replay supports ERC-4626 vaults only."), 422);
     }

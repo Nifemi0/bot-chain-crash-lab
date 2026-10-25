@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { isDemoReplayTarget } from "@/lib/replay-policy";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { BrowserProvider, type Eip1193Provider } from "ethers";
 import { createAttestationData } from "@/lib/attestation";
@@ -626,11 +627,11 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               </article>
             )}
 
-            {simulation && state === "complete" && simulation.analysis.kind === "erc4626-vault" && (
+            {simulation && state === "complete" && simulation.analysis.kind === "erc4626-vault" && isDemoReplayTarget(simulation.chainId, simulation.contractAddress) && (
               <section className="fork-replay" data-testid="fork-replay" aria-labelledby="fork-replay-title">
                 <div className="fork-replay__intro">
                   <div>
-                    <p className="eyebrow">Isolated attack replay</p>
+                    <p className="eyebrow">Controlled demo replay</p>
                     <h3 id="fork-replay-title">Test the vault, not the live chain.</h3>
                   </div>
                   <span>ERC-4626 · DONATION INFLATION</span>
@@ -639,7 +640,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   Crash Lab forks a pinned {network.name} block, funds two test accounts on that fork,
                   makes a first deposit and direct donation, then checks whether a non-zero victim deposit mints zero shares.
                   This template needs an empty vault and an asset with a usable public mint function on the fork.
-                  The deployed Crash Lab reference vault uses a disclosed empty-state fixture; third-party vaults do not.
+                  Replay is available only for Crash Lab's fixed demo vaults. Other contracts receive read-only analysis.
                 </p>
                 {!forkReplay && (
                   <button className="button button--primary" type="button" onClick={runForkReplay}
