@@ -1,5 +1,8 @@
 import { getAddress } from "ethers";
 
+const chainId = Number(process.env.BOTCHAIN_CHAIN_ID ?? 677);
+const isMainnet = chainId === 677;
+
 export const BOT_CHAIN = {
   name: "BOT Chain Mainnet", chainId: 677,
   rpcUrl: process.env.BOTCHAIN_RPC_URL ?? "https://rpc.botchain.ai",
