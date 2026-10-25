@@ -7,7 +7,6 @@ import { BrowserProvider, type Eip1193Provider } from "ethers";
 import { createAttestationData } from "@/lib/attestation";
 import type { AiInvestigation, CanonicalRun, ForkReplay, Simulation, SimulationEvent } from "@/lib/types";
 
-const IMPACT_RIG_URL = "/images/protocol-impact-rig.webp";
 
 type Props = {
   network: {
@@ -326,7 +325,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell workspace-redesign">
       <div className="paper-texture" aria-hidden="true" />
 
       <header className={`site-nav${scrolled ? " is-scrolled" : ""}`}>
@@ -399,13 +398,11 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                 <span><i /> LIVE {network.name.toUpperCase()} EVIDENCE</span>
               </p>
               <h1>
-                <span>Inspect your</span>
-                <span>Protocol before</span>
-                <span>Mainnet.</span>
+                <span>Understand the contract.</span>
+                <span>Follow the evidence.</span>
               </h1>
               <p className="hero__lede">
-                Analyze any deployed {network.name} contract using its live runtime bytecode, read-only interface
-                probes, proxy storage, and risk-surface checks. Eligible vaults can then run a real attack sequence on an isolated fork.
+                Your workspace for live contract analysis, evidence-backed AI reviews, and verifiable on-chain reports.
               </p>
               <div className="hero__actions">
                 <a className="button button--primary" href="#start-simulation">Analyze contract</a>
@@ -414,28 +411,16 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
               <p className="safety-note">Live scans are read-only · fork transactions never reach mainnet · wallet attestations are optional</p>
             </div>
 
-            <div className="hero__art" aria-label="Physical protocol impact rig striking a smart-contract vault specimen">
-              <Image
-                src={IMPACT_RIG_URL}
-                alt="Physical protocol impact rig striking a smart-contract vault specimen"
-                fill
-                priority
-                sizes="(max-width: 1023px) 100vw, 66vw"
-              />
-              <div className="specimen-readout">
-                <strong>Specimen: V-{network.chainId}</strong>
-                  <span>Contract: {shorten(contracts.vulnerableVault, 8)}</span>
-              </div>
-              <div className="calibration-tape" aria-hidden="true">
-                <div>
-                  <span>BYTECODE RETRIEVED</span>
-                  <span>INTERFACES PROBED</span>
-                  <span>PROXY SLOT CHECKED</span>
-                  <span>OPCODES REVIEWED</span>
-                  <span>BYTECODE RETRIEVED</span>
-                </div>
-              </div>
-            </div>
+            <aside className="workspace-summary" aria-label="Workspace summary">
+              <p className="eyebrow">Your workspace</p>
+              <strong>{network.name}</strong>
+              <dl>
+                <div><dt>Saved analyses</dt><dd>{historyState === "ready" ? history.filter((item) => item.chainId === network.chainId).length : "—"}</dd></div>
+                <div><dt>Wallet</dt><dd>{walletAddress ? shorten(walletAddress, 4) : "Not connected"}</dd></div>
+                <div><dt>Analysis mode</dt><dd>Read-only</dd></div>
+              </dl>
+              <p>Start with an address. Connect your wallet when you are ready to anchor a report.</p>
+            </aside>
           </div>
         </section>
 
