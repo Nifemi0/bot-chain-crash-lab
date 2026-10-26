@@ -559,9 +559,25 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
                   <div><dt>Contract type</dt><dd>{simulation.analysis.label}</dd></div>
                   <div><dt>Runtime size</dt><dd>{simulation.analysis.runtimeBytes.toLocaleString()} bytes</dd></div>
                   <div><dt>Capabilities</dt><dd>{simulation.analysis.capabilities.join(" · ") || "Custom interface"}</dd></div>
+                  <div><dt>Family signals</dt><dd>{simulation.analysis.familyCoverage?.filter((family) => family.status === "interface-signal").map((family) => family.label).join(" · ") || "No standard family confirmed"}</dd></div>
                   <div><dt>Selector surface</dt><dd>{simulation.analysis.selectorCandidates.length.toLocaleString()} PUSH4 candidates · read-only fingerprint</dd></div>
                   <div><dt>Runtime code hash</dt><dd>{shorten(simulation.codeHash, 12)}</dd></div>
                 </dl>
+                {simulation.analysis.familyCoverage && (
+                  <details className="family-coverage">
+                    <summary>Explore contract-family review coverage</summary>
+                    <p>These are read-only review lenses, not proof of the contract&apos;s purpose or safety. Unestablished families need verified source or ABI evidence.</p>
+                    <div className="family-coverage__grid">
+                      {simulation.analysis.familyCoverage.map((family) => (
+                        <article key={family.id}>
+                          <div><strong>{family.label}</strong><span>{family.status === "interface-signal" ? "Interface signal" : family.status === "unclassified" ? "Unclassified" : "Not established"}</span></div>
+                          <p>{family.basis}</p>
+                          <small>Review focus: {family.reviewFocus}</small>
+                        </article>
+                      ))}
+                    </div>
+                  </details>
+                )}
                 {simulation.analysis.implementationAddress && (
                   <p className="finding__implementation">
                     Proxy implementation: {simulation.analysis.implementationAddress}

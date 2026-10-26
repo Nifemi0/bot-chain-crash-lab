@@ -307,6 +307,16 @@
 .workspace-redesign .finding { margin-top: 0; padding: 36px; background: white; }
 .workspace-redesign .finding h3 { font-size: clamp(38px, 4.7vw, 62px); font-weight: 400; }
 .workspace-redesign .finding dl { border-color: var(--ink); }
+.workspace-redesign .family-coverage { margin: 26px 0; padding: 20px; border: 2px solid var(--ink); border-radius: 16px; background: var(--paper); }
+.workspace-redesign .family-coverage summary { cursor: pointer; font-weight: 800; }
+.workspace-redesign .family-coverage > p { margin: 12px 0 18px; color: var(--muted); font-size: 13px; }
+.workspace-redesign .family-coverage__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.workspace-redesign .family-coverage__grid article { min-width: 0; padding: 14px; border: 1px solid var(--ink); border-radius: 10px; background: white; }
+.workspace-redesign .family-coverage__grid article > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.workspace-redesign .family-coverage__grid strong { font-size: 13px; }
+.workspace-redesign .family-coverage__grid span { flex: none; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.workspace-redesign .family-coverage__grid p { margin: 9px 0; font-size: 12px; }
+.workspace-redesign .family-coverage__grid small { font-size: 11px; color: var(--muted); }
 .workspace-redesign .analysis-check { border-radius: 14px; background: var(--paper); }
 .workspace-redesign .ai-investigation,
 .workspace-redesign .fork-replay { padding: 36px; border: 3px solid var(--ink); border-radius: 26px; background: var(--navy); color: white; box-shadow: 7px 7px 0 var(--ink); }
@@ -422,5 +432,6 @@
   .workspace-redesign .history-status { grid-column: 3; grid-row: 1; }
   .workspace-redesign .ai-report__summary, .workspace-redesign .ai-findings { grid-template-columns: 1fr; }
   .workspace-redesign .finding dl, .workspace-redesign .fork-replay__result dl { grid-template-columns: 1fr; }
+  .workspace-redesign .family-coverage__grid { grid-template-columns: 1fr; }
   .workspace-redesign .footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

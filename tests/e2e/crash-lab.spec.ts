@@ -74,6 +74,9 @@ test("reference contract returns live analysis without simulated claims", async 
   await expect(page.locator('[data-event-type="replay.completed"]')).toHaveCount(0);
   await expect(page.getByTestId("finding-report")).toContainText("surface analysis");
   await expect(page.getByTestId("finding-report")).toContainText("surface report is read-only");
+  await page.getByText("Explore contract-family review coverage").click();
+  await expect(page.locator(".family-coverage__grid article")).toHaveCount(10);
+  await expect(page.locator(".family-coverage__grid article").filter({ hasText: "Lending" })).toContainText("Not established");
   await expect(page.getByTestId("fork-replay")).toBeVisible();
 });
 

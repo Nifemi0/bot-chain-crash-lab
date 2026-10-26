@@ -25,6 +25,15 @@ export type ContractAnalysis = {
   implementationAddress: string | null;
   checks: AnalysisCheck[];
   selectorCandidates: string[];
+  familyCoverage?: ContractFamilyCoverage[];
+};
+
+export type ContractFamilyCoverage = {
+  id: string;
+  label: string;
+  status: "interface-signal" | "not-established" | "unclassified";
+  basis: string;
+  reviewFocus: string;
 };
 
 export type AiEvidence = {

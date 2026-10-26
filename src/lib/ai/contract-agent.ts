@@ -93,7 +93,7 @@ async function generateEvidenceReport(model: ReturnType<typeof getInvestigationM
   const response = await generateText({
     model,
     maxOutputTokens: 1_400,
-    prompt: `You are the defensive report writer for Crash Lab. Write an evidence-grounded report for ${simulation.contractAddress} on ${simulation.network} chain ${simulation.chainId}. Use only the JSON evidence below. Never claim a vulnerability, exploitability, malicious intent, or safety has been proven. This is live read-only evidence, not a simulation or full audit. Never assign a function or error name to a raw selector candidate unless that name is explicitly present in the evidence. Return ONLY valid JSON matching this shape: {"overview":string,"reviewLevel":"low|review|elevated|unknown","confidence":number,"findings":[{"title":string,"classification":"notice|caution|unknown","evidenceIds":[string],"observation":string,"whyItMatters":string,"nextStep":string}],"limitations":[string]}. Every finding evidenceIds value must be one of: ${[...evidence.keys()].join(", ")}.\n\nEVIDENCE:\n${JSON.stringify([...evidence.values()])}`,
+    prompt: `You are the defensive report writer for Crash Lab. Write an evidence-grounded report for ${simulation.contractAddress} on ${simulation.network} chain ${simulation.chainId}. Use only the JSON evidence below. Never claim a vulnerability, exploitability, malicious intent, or safety has been proven. This is live read-only evidence, not a simulation or full audit. Never assign a function or error name to a raw selector candidate unless that name is explicitly present in the evidence. Family coverage is a set of review lenses: an interface-signal is not verified protocol classification, and a not-established family must never be described as detected. Return ONLY valid JSON matching this shape: {"overview":string,"reviewLevel":"low|review|elevated|unknown","confidence":number,"findings":[{"title":string,"classification":"notice|caution|unknown","evidenceIds":[string],"observation":string,"whyItMatters":string,"nextStep":string}],"limitations":[string]}. Every finding evidenceIds value must be one of: ${[...evidence.keys()].join(", ")}.\n\nEVIDENCE:\n${JSON.stringify([...evidence.values()])}`,
   });
   const text = response.text.trim().replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
   const parsed = investigationOutput.parse(JSON.parse(text));
@@ -126,6 +126,7 @@ export async function runContractInvestigation(simulation: Simulation): Promise<
       codeHash: simulation.codeHash,
       kind: simulation.analysis.kind,
       capabilities: simulation.analysis.capabilities,
+      familyCoverage: simulation.analysis.familyCoverage,
       selectorCandidates: simulation.analysis.selectorCandidates,
       checks: simulation.analysis.checks,
     },
@@ -147,6 +148,7 @@ Rules:
 - Every finding must cite one or more exact evidence IDs returned by tools or E-BASELINE.
 - Treat opcode presence as a review target, not proof that the behavior is reachable or unsafe.
 - Never assign a function or error name to a raw selector candidate unless that name is explicitly present in the evidence.
+- Treat family coverage as review lenses. Interface signals are not verified protocol classifications; never present a not-established or unclassified family as detected.
 - Do not invent source code, transactions, balances, owners, implementation addresses, or standards.
 - State limitations clearly and recommend manual source-level review or protocol-specific testing where appropriate.
 - No transaction or exploit simulation is available.
@@ -207,6 +209,7 @@ Rules:
               kind: analysis.kind,
               label: analysis.label,
               capabilities: analysis.capabilities,
+              familyCoverage: analysis.familyCoverage,
               implementationAddress: analysis.implementationAddress,
             },
           });
@@ -270,7 +273,7 @@ Rules:
       source: "interface-rpc",
       title: "Read-only interface profile",
       observation: `${analysis.label} classified from live eth_call probes and proxy-slot inspection.`,
-      data: { kind: analysis.kind, label: analysis.label, capabilities: analysis.capabilities, implementationAddress: analysis.implementationAddress },
+      data: { kind: analysis.kind, label: analysis.label, capabilities: analysis.capabilities, familyCoverage: analysis.familyCoverage, implementationAddress: analysis.implementationAddress },
     });
     record({
       id: "E-OPCODES",

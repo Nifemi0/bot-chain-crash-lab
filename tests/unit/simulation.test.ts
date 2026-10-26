@@ -56,4 +56,15 @@ describe("simulation model", () => {
     expect(analyzeRuntimeBytecode("0x60ff00").checks.some((check) => check.id === "opcode-ff")).toBe(false);
     expect(analyzeRuntimeBytecode("0xff").checks.some((check) => check.id === "opcode-ff")).toBe(true);
   });
+
+  it("covers common contract families without claiming unknown types were detected", () => {
+    const token = analyzeRuntimeBytecode("0x60006000", { erc20: true });
+    expect(token.familyCoverage?.find((family) => family.id === "fungible-token")?.status).toBe("interface-signal");
+    expect(token.familyCoverage?.find((family) => family.id === "lending")?.status).toBe("not-established");
+    expect(token.familyCoverage?.find((family) => family.id === "bridge")?.status).toBe("not-established");
+
+    const unknown = analyzeRuntimeBytecode("0x60006000");
+    expect(unknown.familyCoverage?.find((family) => family.id === "custom")?.status).toBe("unclassified");
+    expect(unknown.familyCoverage?.filter((family) => family.id !== "custom" && family.status === "interface-signal")).toEqual([]);
+  });
 });

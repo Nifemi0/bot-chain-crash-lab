@@ -1,4 +1,5 @@
 import { getAddress } from "ethers";
+import { contractFamilyCoverage } from "@/lib/contract-families";
 import type { AnalysisCheck, ContractAnalysis, ContractKind } from "@/lib/types";
 
 type InspectionHints = {
@@ -164,5 +165,6 @@ export function analyzeRuntimeBytecode(
       : null,
     checks,
     selectorCandidates: selectors,
+    familyCoverage: contractFamilyCoverage(hints),
   };
 }
