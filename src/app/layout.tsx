@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Bangers, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
-import { BOT_CHAIN } from "@/lib/network";
 import "./globals.css";
 import "./fathefe.css";
+import "./landing.css";
 
 const display = Bangers({
   subsets: ["latin"],
@@ -28,15 +28,15 @@ export const metadata: Metadata = {
         : "http://localhost:3000"),
   ),
   title: {
-    default: "Crash Lab — BOT Chain contract analyzer",
+    default: "Crash Lab — Contract evidence before you interact",
     template: "%s | Crash Lab",
   },
   description:
-    `Inspect live ${BOT_CHAIN.name} contracts using deployed bytecode, read-only interface probes, proxy detection, and opcode surface checks.`,
-  keywords: ["BOT Chain", "smart contract security", "bytecode analysis", "contract analyzer", "hackathon"],
+    "Inspect deployed contracts on BOT Chain and Robinhood Chain using live bytecode, read-only interface probes, and evidence-backed reports.",
+  keywords: ["BOT Chain", "Robinhood Chain", "smart contract", "bytecode analysis", "contract analyzer"],
   openGraph: {
     title: "Crash Lab",
-    description: "Live BOT Chain bytecode and interface analysis with no simulated exploit claims.",
+    description: "Live contract bytecode and interface analysis with evidence-backed reporting.",
     type: "website",
   },
   twitter: { card: "summary_large_image", title: "Crash Lab" },

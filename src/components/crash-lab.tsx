@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { isDemoReplayTarget } from "@/lib/replay-policy";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { BrowserProvider, type Eip1193Provider } from "ethers";
@@ -330,10 +331,10 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
 
       <header className={`site-nav${scrolled ? " is-scrolled" : ""}`}>
         <div className="nav-inner section-shell">
-          <a className="nav-brand" href="#top" aria-label="Crash Lab home" onClick={closeMenu}>
+          <Link className="nav-brand" href="/" aria-label="Crash Lab home" onClick={closeMenu}>
             <Image className="nav-mark" src="/images/crash-lab-mark.png" alt="" width={42} height={42} priority />
             <span className="nav-wordmark">CRASH LAB</span>
-          </a>
+          </Link>
 
           <nav className="desktop-nav" aria-label="Primary navigation">
             <a href="#start-simulation">Analyze</a>

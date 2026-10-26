@@ -6,5 +6,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     (process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : "http://localhost:3000");
-  return [{ url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 }];
+  return [
+    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl.replace(/\/$/, "")}/app`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+  ];
 }
