@@ -3,6 +3,7 @@
 deployments/robinhood/replay-progress.json
 /.env.local
 .next/
+.superdesign/
 node_modules/
 coverage/
 playwright-report/

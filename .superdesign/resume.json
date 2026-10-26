@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "existing-ui",
+      "projectId": "67b1da5c-f8ad-4176-8590-6183752908ce",
+      "baselineDraftId": "9ce4fc44-07fc-458f-b2ec-0b4bb0930b59",
+      "activeDraftId": "50a7b40c-45fb-46e9-a24e-82a2fcb78b90",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": ["public-images-crash-lab-mark.png", "25153762-f86c-4392-882e-4792f8eca6be"],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-images-crash-lab-mark.png",
+          "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/67b1da5c-f8ad-4176-8590-6183752908ce/brand-assets/public-images-crash-lab-mark.png/crash-lab-mark.png",
+          "sourcePath": "public/images/crash-lab-mark.png"
+        }
+      },
+      "contextFiles": ["src/components/crash-lab.tsx", "src/app/fathefe.css", "src/app/globals.css:1:33", "src/app/page.tsx", ".superdesign/design-system.md"],
+      "fingerprints": {
+        "src/components/crash-lab.tsx": "d2ca6d7763a348a5249715ce7883634bcd3d999e47d454c8c01f632aca363d11",
+        "src/app/fathefe.css": "144f7c256f6e422ec1343a436d4864c12f862975dee42758dc467e0eb25d0eb3",
+        "src/app/globals.css": "6e2029a72ae35d0edc7b85abeb395a08888327a938dd6886f82953599023b0a7",
+        "src/app/page.tsx": "b10c95720d3bde16d88102bd1ccb31dfd8050b36f1cf9ea2a08ba51b5ec3bd8b",
+        ".superdesign/design-system.md": "537e1618ff4dd1c2eabe2f53176f403eacfd5ff854602cfadac1b5d343dc951f"
+      },
+      "components": [{"name": "PrimaryNavigation", "id": "3f7a9153-fc9e-4d46-a7a0-936cc5a01f31", "sourcePath": "src/components/crash-lab.tsx", "logoAssetKey": "public-images-crash-lab-mark.png"}],
+      "drafts": {
+        "9ce4fc44-07fc-458f-b2ec-0b4bb0930b59": {"title": "Crash Lab Baseline", "visualDirection": "current live dashboard", "currentVersion": 1},
+        "513fcc87-b377-498a-ae01-d4e596cd7337": {"title": "Premium Research Terminal", "visualDirection": "ivory editorial research terminal", "parentDraftId": "9ce4fc44-07fc-458f-b2ec-0b4bb0930b59", "currentVersion": 1},
+        "8981a2e9-5001-432d-a089-77a9cbcca34f": {"title": "Investigative Instrument Redesign", "visualDirection": "charcoal investigative instrument", "parentDraftId": "9ce4fc44-07fc-458f-b2ec-0b4bb0930b59", "currentVersion": 1},
+        "50a7b40c-45fb-46e9-a24e-82a2fcb78b90": {"title": "Crash Lab - Fat Hefe Inspired Full Page", "visualDirection": "sky-blue illustrated landscape with cream cards, warm terrain, bold outlines, coral and yellow controls", "parentDraftId": "9ce4fc44-07fc-458f-b2ec-0b4bb0930b59", "currentVersion": 3}
+      },
+      "updatedAt": "2026-10-26T00:22:39Z"
+    }
+  }
+}

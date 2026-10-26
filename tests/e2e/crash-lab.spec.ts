@@ -1,16 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("brand lockup and analysis action stay compact", async ({ page }) => {
+test("approved brand and live analyzer appear together", async ({ page }) => {
   await page.goto("/");
   const brand = page.getByRole("link", { name: "Crash Lab home" });
   await expect(brand).toContainText("CRASH LAB");
   await expect(brand).not.toContainText("BOT /");
-
-  const button = page.getByTestId("start-simulation");
-  const box = await button.boundingBox();
-  expect(box).not.toBeNull();
-  expect(box!.width).toBeLessThan(210);
-  expect(box!.height).toBeLessThanOrEqual(56);
+  await expect(page.getByRole("heading", { name: "See what the contract actually does." })).toBeVisible();
+  await expect(page.getByTestId("contract-address")).toBeVisible();
+  await expect(page.getByTestId("start-simulation")).toBeVisible();
 });
 
 test("rendered links and controls have working targets", async ({ page }) => {
@@ -25,16 +22,21 @@ test("rendered links and controls have working targets", async ({ page }) => {
   );
   expect(audit.filter((item) => item.missingTarget || item.invalidValue)).toEqual([]);
 
-  await page.getByRole("link", { name: "Analyze contract", exact: true }).first().click();
-  await expect(page).toHaveURL(/#start-simulation$/);
-  await page.getByRole("button", { name: "Use deployed reference contract" }).click();
-  await expect(page.getByTestId("contract-address")).toHaveValue(/^0x[0-9a-fA-F]{40}$/);
-
   const menuToggle = page.locator('button[aria-controls="mobile-nav-panel"]');
   if (await menuToggle.isVisible()) {
     await menuToggle.click();
+    await page.locator("#mobile-nav-panel").getByRole("link", { name: "Analyze a contract" }).click();
+  } else {
+    await page.getByRole("link", { name: "Analyze", exact: true }).first().click();
+  }
+  await expect(page).toHaveURL(/#start-simulation$/);
+  await page.getByRole("button", { name: "Use deployed reference" }).click();
+  await expect(page.getByTestId("contract-address")).toHaveValue(/^0x[0-9a-fA-F]{40}$/);
+
+  if (await menuToggle.isVisible()) {
+    await menuToggle.click();
     await expect(menuToggle).toHaveAttribute("aria-expanded", "true");
-    await page.locator("#mobile-nav-panel").getByRole("link", { name: "Analyzer" }).click();
+    await page.locator("#mobile-nav-panel").getByRole("link", { name: "Analyze a contract" }).click();
     await expect(page).toHaveURL(/#start-simulation$/);
   }
 });
@@ -42,18 +44,29 @@ test("rendered links and controls have working targets", async ({ page }) => {
 test("footer exposes only real destinations and plain network metadata", async ({ page }) => {
   await page.goto("/");
   const footer = page.locator("footer");
-  await expect(footer.getByRole("link")).toHaveCount(8);
+  await expect(footer.getByRole("link")).toHaveCount(9);
   await expect(footer.locator('a[href="https://rpc.bohr.life"]')).toHaveCount(0);
   await expect(footer.getByText("BOT Chain Mainnet · 677", { exact: true })).toBeVisible();
   await expect(footer.getByText("Read-only scan + vault fork", { exact: true })).toBeVisible();
   await expect(footer.getByRole("link", { name: "API health" })).toHaveAttribute("href", "/api/health");
-  await expect(footer.getByRole("link", { name: "Block explorer ↗" })).toHaveAttribute("href", "https://scan.botchain.ai");
+  await expect(footer.getByRole("link", { name: "BOT Chain explorer ↗" })).toHaveAttribute("href", "https://scan.botchain.ai");
+  await expect(footer.getByRole("link", { name: "BOT Chain ↗" })).toHaveAttribute("href", "https://botchain.ai");
+});
+
+test("mobile redesign keeps the scan controls inside the viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.getByTestId("contract-address")).toBeVisible();
+  await expect(page.getByTestId("start-simulation")).toBeVisible();
+  await expect(page.locator('button[aria-controls="mobile-nav-panel"]')).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
 });
 
 test("reference contract returns live analysis without simulated claims", async ({ page }) => {
   test.setTimeout(60_000);
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /inspect your protocol before mainnet/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /see what the contract actually does/i })).toBeVisible();
   await page.getByTestId("start-simulation").click();
   await expect(page.getByTestId("simulation-console")).toBeVisible({ timeout: 20_000 });
   await expect(page.locator('[data-event-type="surface.scanned"]')).toBeVisible({ timeout: 20_000 });

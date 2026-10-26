@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, IBM_Plex_Mono, Inter_Tight } from "next/font/google";
+import { Bangers, IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { BOT_CHAIN } from "@/lib/network";
 import "./globals.css";
+import "./fathefe.css";
 
-const display = Barlow_Condensed({
+const display = Bangers({
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: "400",
   variable: "--font-display",
 });
-const body = Inter_Tight({
+const body = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-body",
 });
 const mono = IBM_Plex_Mono({
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f2eee6",
+  themeColor: "#6db3e8",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

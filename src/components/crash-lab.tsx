@@ -338,7 +338,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           <nav className="desktop-nav" aria-label="Primary navigation">
             <a href="#start-simulation">Analyze</a>
             <a href="#scan-history">History</a>
-            <a href="#demo-lab">Demo Lab</a>
+            <a href="#simulator">How it works</a>
             <a href="#passport">Passport</a>
           </nav>
 
@@ -359,11 +359,9 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
             >
               <span /><span />
             </button>
-            <a className="button button--primary nav-cta" href="#start-simulation" onClick={closeMenu}>
-              Analyze a contract
-            </a>
-            <button className="wallet-chip" type="button" onClick={connectWallet} disabled={walletState === "connecting" || walletState === "switching"}>
-              {walletAddress ? shorten(walletAddress, 5) : "Connect wallet"}
+            <button className="wallet-chip" type="button" aria-label={walletAddress ? shorten(walletAddress, 5) : "Connect wallet"} onClick={connectWallet} disabled={walletState === "connecting" || walletState === "switching"}>
+              <span className="wallet-chip__desktop">{walletAddress ? shorten(walletAddress, 5) : "Connect wallet"}</span>
+              <span className="wallet-chip__mobile" aria-hidden="true">{walletAddress ? shorten(walletAddress, 3) : "Connect"}</span>
             </button>
           </div>
         </div>
@@ -377,7 +375,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           </label>
           <a href="#start-simulation" onClick={closeMenu}>Analyze a contract</a>
           <a href="#scan-history" onClick={closeMenu}>Saved scans</a>
-          <a href="#demo-lab" onClick={closeMenu}>Demo Lab</a>
+          <a href="#simulator" onClick={closeMenu}>How it works</a>
           <a href="#passport" onClick={closeMenu}>Passport</a>
           <a href="#start-simulation" onClick={closeMenu}>New analysis</a>
           <button type="button" className="mobile-nav__wallet" onClick={() => { closeMenu(); void connectWallet(); }}>
@@ -389,39 +387,53 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
         )}
       </header>
 
-      <main>
-        <section id="top" className="hero">
+      <main id="top">
+        <section id="start-simulation" className="hero">
+          <div className="hero__scene" aria-hidden="true">
+            <div className="hero__sun" />
+            <div className="hero__hill hero__hill--back" />
+            <div className="hero__hill hero__hill--front" />
+            <div className="hero__instrument">
+              <span className="hero__instrument-light" />
+              <span className="hero__instrument-screen"><i /><i /><b>READ-ONLY</b></span>
+              <span className="hero__instrument-base" />
+            </div>
+            <div className="hero__wave" />
+          </div>
           <div className="hero__inner section-shell">
             <div className="hero__copy">
-              <p className="hero__meta">
-                <span>{network.name.toUpperCase()} · CHAIN {network.chainId}</span>
-                <span><i /> LIVE {network.name.toUpperCase()} EVIDENCE</span>
-              </p>
-              <h1>
-                <span>Understand the contract.</span>
-                <span>Follow the evidence.</span>
-              </h1>
-              <p className="hero__lede">
-                Your workspace for live contract analysis, evidence-backed AI reviews, and verifiable on-chain reports.
-              </p>
-              <div className="hero__actions">
-                <a className="button button--primary" href="#start-simulation">Analyze contract</a>
-                <a className="button button--dark" href="#simulator">See how evidence is collected</a>
-              </div>
-              <p className="safety-note">Live scans are read-only · fork transactions never reach mainnet · wallet attestations are optional</p>
+              <div className="hero__card-top"><span>CONTRACT INTELLIGENCE</span><span>EST. 2026</span></div>
+              <h1>See what<br />the contract<br /><em>actually does.</em></h1>
+              <p className="hero__lede">Start with a live, read-only review. Save the evidence, ask AI to explain it, and anchor a report when you are ready.</p>
+              <form className="runner__form" onSubmit={startSimulation}>
+                <label htmlFor="contract-address">Target address</label>
+                <input
+                  id="contract-address"
+                  data-testid="contract-address"
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                  placeholder={`${network.name} address (0x...)`}
+                  spellCheck={false}
+                  autoComplete="off"
+                  aria-describedby="simulation-status"
+                />
+                <div className="hero__form-actions">
+                  <button className="button button--primary" data-testid="start-simulation" disabled={state === "creating" || state === "streaming"}>
+                    {state === "creating" ? "Inspecting…" : state === "streaming" ? "Analyzing…" : "Analyze contract"}<span aria-hidden="true">→</span>
+                  </button>
+                  <a className="hero__history-link" href="#scan-history" aria-label="View saved scans">↺</a>
+                </div>
+                <div id="demo-lab" className="runner__examples">
+                  <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>Use deployed reference</button>
+                  <button type="button" className="text-button" onClick={() => setAddress(contracts.patchedVault)}>Compare patched vault</button>
+                </div>
+                <p id="simulation-status" className={`runner__status runner__status--${state}`} role="status" aria-live="polite">{message}</p>
+                {(state === "streaming" || state === "complete") && <a className="hero__report-link" href={state === "complete" ? "#finding-report" : "#simulation-console"}>{state === "complete" ? "View report ↓" : "View live progress ↓"}</a>}
+              </form>
+              <div className="hero__card-bottom"><span>READ-ONLY / LIVE / DETERMINISTIC</span><span>{network.name.toUpperCase()}</span></div>
             </div>
-
-            <aside className="workspace-summary" aria-label="Workspace summary">
-              <p className="eyebrow">Your workspace</p>
-              <strong>{network.name}</strong>
-              <dl>
-                <div><dt>Saved analyses</dt><dd>{historyState === "ready" ? history.filter((item) => item.chainId === network.chainId).length : "—"}</dd></div>
-                <div><dt>Wallet</dt><dd>{walletAddress ? shorten(walletAddress, 4) : "Not connected"}</dd></div>
-                <div><dt>Analysis mode</dt><dd>Read-only</dd></div>
-              </dl>
-              <p>Start with an address. Connect your wallet when you are ready to anchor a report.</p>
-            </aside>
           </div>
+          <a className="hero__passport-link" href="#passport">PASSPORT <span aria-hidden="true">↗</span></a>
         </section>
 
         <section id="how-it-works" className="capability-rail" aria-label="Crash Lab capabilities">
@@ -479,64 +491,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
           </div>
         </section>
 
-        <section id="start-simulation" className="simulation-section">
+        <section className="simulation-section" aria-label="Analysis workspace">
           <div className="simulation-stack">
-            <header className="workspace-head">
-              <div>
-                <p className="eyebrow">Crash Lab / Contract intelligence</p>
-                <h1>See what the contract actually does.</h1>
-                <p>Start with a live, read-only review. Save the evidence, ask AI to explain it, and anchor a report when you are ready.</p>
-              </div>
-              <div className="workspace-head__status"><i />{network.name}<span>Live network</span></div>
-            </header>
-            <nav className="workspace-nav" aria-label="Analysis workspace">
-              <a href="#start-simulation"><span>Analyze</span><small>Check a contract address</small></a>
-              <a href="#scan-history"><span>History</span><small>Reopen a private scan</small></a>
-              <a href="#demo-lab"><span>Demo Lab</span><small>Explore our sample vaults</small></a>
-              <a href="#passport"><span>Passport</span><small>Inspect on-chain evidence</small></a>
-            </nav>
-            <div className="simulation-dossier">
-              <span className="calibration-tab">LIVE RPC</span>
-              <div className="simulation-dossier__intro">
-                <p className="eyebrow">New analysis</p>
-                <h2>Enter a contract address</h2>
-                <p>
-                  Submit any deployed {network.name} address for a read-only surface analysis. Crash Lab&apos;s fixed demo vaults
-                  also support a controlled demonstration on an isolated chain fork.
-                </p>
-              </div>
-
-              <form className="runner__form" onSubmit={startSimulation}>
-                <label htmlFor="contract-address">Contract address</label>
-                <div className="runner__controls">
-                  <input
-                    id="contract-address"
-                    data-testid="contract-address"
-                    value={address}
-                    onChange={(event) => setAddress(event.target.value)}
-                    placeholder={`ENTER ${network.name.toUpperCase()} ADDRESS (0x...)`}
-                    spellCheck={false}
-                    autoComplete="off"
-                    aria-describedby="simulation-status"
-                  />
-                  <button className="button button--primary" data-testid="start-simulation" disabled={state === "creating" || state === "streaming"}>
-                    {state === "creating" ? "Inspecting…" : state === "streaming" ? "Analyzing…" : "Analyze contract"}
-                  </button>
-                </div>
-                <div className="runner__footer">
-                  <div id="demo-lab" className="runner__examples">
-                    <button type="button" className="text-button" onClick={() => setAddress(contracts.vulnerableVault)}>
-                      Use deployed reference contract
-                    </button>
-                    <button type="button" className="text-button" onClick={() => setAddress(contracts.patchedVault)}>
-                      Compare patched vault
-                    </button>
-                  </div>
-                  <p id="simulation-status" className={`runner__status runner__status--${state}`} role="status" aria-live="polite">{message}</p>
-                </div>
-              </form>
-            </div>
-
             <section id="scan-history" className="scan-history" data-testid="scan-history" aria-labelledby="scan-history-title">
               <div className="scan-history__heading">
                 <div>
@@ -548,8 +504,8 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
 
               {historyState === "loading" && <p className="scan-history__empty">Loading saved evidence…</p>}
               {historyState === "error" && <p className="scan-history__empty">History is temporarily unavailable. New scans can still be retried.</p>}
-              {historyState === "ready" && history.length === 0 && (
-                <p className="scan-history__empty">No scans saved in this browser yet. Other visitors cannot see your history.</p>
+              {historyState === "ready" && history.filter((saved) => saved.chainId === network.chainId).length === 0 && (
+                <p className="scan-history__empty">No {network.name} scans saved in this browser yet. Other visitors cannot see your history.</p>
               )}
               {history.length > 0 && (
                 <div className="scan-history__list">
@@ -574,7 +530,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
             </section>
 
             {(events.length > 0 || simulation) && (
-              <div className="console" data-testid="simulation-console">
+              <div id="simulation-console" className="console" data-testid="simulation-console">
                 <div className="console__header">
                   <span>Crash Lab / live analysis stream</span>
                   <span>{simulation ? shorten(simulation.simulationId, 8) : "connecting"}</span>
@@ -592,7 +548,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
             )}
 
             {simulation && state === "complete" && (
-              <article className="finding" data-testid="finding-report">
+              <article id="finding-report" className="finding" data-testid="finding-report">
                 <div className="finding__topline">
                   <span>{simulation.finding.id}</span>
                   <strong className={`badge badge--${simulation.finding.status}`}>{simulation.finding.status}</strong>
@@ -806,7 +762,7 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
       <nav className="mobile-workspace-nav" aria-label="Workspace shortcuts">
         <a href="#start-simulation">Analyze</a>
         <a href="#scan-history">History</a>
-        <a href="#demo-lab">Demo Lab</a>
+        <a href="#simulator">How it works</a>
         <a href="#passport">Passport</a>
       </nav>
 
@@ -814,13 +770,13 @@ export function CrashLab({ network: initialNetwork, contracts: initialContracts,
         <div className="section-shell site-footer__grid">
           <div className="footer-brand">
             <div className="footer-brand__lockup"><Image src="/images/crash-lab-mark.png" alt="" width={54} height={54} /><strong>CRASH LAB</strong></div>
-            <span>Experimental protocol hardening</span>
-            <p>Live smart-contract evidence and isolated vault replays for {network.name}.</p>
+            <span>Live contract intelligence</span>
+            <p>Read-only evidence for {network.name}. Optional wallet attestation commits a report hash; it does not certify safety.</p>
           </div>
           <nav className="footer-links" aria-label="Footer navigation">
             <div><strong>Workspace</strong><a href="#start-simulation">Contract analyzer</a><a href="#scan-history">Saved scans</a><a href="#demo-lab">Demo Lab</a></div>
             <div><strong>Resources</strong><a href="/api/health">API health</a><a href="/demo/crash-lab-demo.mp4" target="_blank" rel="noreferrer">Demo video ↗</a><a href="https://github.com/Nifemi0/bot-chain-crash-lab" target="_blank" rel="noreferrer">GitHub source ↗</a></div>
-            <div><strong>{network.name}</strong><a href={network.explorerUrl} target="_blank" rel="noreferrer">Block explorer ↗</a><a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport contract ↗</a></div>
+            <div><strong>Networks</strong><a href="https://botchain.ai" target="_blank" rel="noreferrer">BOT Chain ↗</a><a href="https://scan.botchain.ai" target="_blank" rel="noreferrer">BOT Chain explorer ↗</a>{network.chainId !== 677 && <a href={network.explorerUrl} target="_blank" rel="noreferrer">{network.name} explorer ↗</a>}<a href={`${network.explorerUrl}/address/${contracts.passport}`} target="_blank" rel="noreferrer">Passport contract ↗</a></div>
           </nav>
         </div>
         <div className="section-shell footer-bottom">
